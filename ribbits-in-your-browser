@@ -1,0 +1,147 @@
+// Frog Jump Animation - Run in Dev Console
+(function() {
+    // Create overlay container
+    const overlay = document.createElement('div');
+    overlay.id = 'frog-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(135, 206, 235, 0.3);
+        z-index: 10000;
+        pointer-events: none;
+        overflow: hidden;
+    `;
+
+    // Add close button
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = 'buy ribbit <span style="margin-left: 8px; font-size: 12px;">✕</span>';
+    closeBtn.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10001;
+        padding: 10px 15px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        pointer-events: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    `;
+    closeBtn.onclick = (e) => {
+        // Check if the click was on the X (span element)
+        if (e.target.tagName === 'SPAN') {
+            overlay.remove();
+        } else {
+            window.location.href = 'https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe';
+        }
+    };
+
+    // Create frog element
+    function createFrog() {
+        const frog = document.createElement('div');
+        const size = Math.random() * 30 + 20; // 20-50px
+        
+        frog.innerHTML = '🐸';
+        frog.style.cssText = `
+            position: absolute;
+            font-size: ${size}px;
+            user-select: none;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        `;
+
+        // Random starting position
+        const startX = Math.random() * (window.innerWidth - size);
+        const startY = window.innerHeight + size;
+        
+        frog.style.left = startX + 'px';
+        frog.style.top = startY + 'px';
+
+        return frog;
+    }
+
+    // Animate frog jumping
+    function animateFrog(frog) {
+        const jumpHeight = Math.random() * 200 + 100; // 100-300px jump
+        const jumpDistance = Math.random() * 300 + 50; // 50-350px horizontal
+        const direction = Math.random() > 0.5 ? 1 : -1; // left or right
+        
+        let currentX = parseFloat(frog.style.left);
+        let currentY = parseFloat(frog.style.top);
+        
+        function jump() {
+            if (currentY < -60) {
+                frog.remove();
+                return;
+            }
+
+            // Calculate new position
+            const newX = Math.max(0, Math.min(window.innerWidth - 50, 
+                currentX + (jumpDistance * direction * (Math.random() * 0.5 + 0.5))));
+            const newY = currentY - jumpHeight;
+            
+            // Apply jump animation
+            frog.style.transform = `rotate(${direction * 15}deg) scale(${1 + Math.random() * 0.3})`;
+            frog.style.left = newX + 'px';
+            frog.style.top = newY + 'px';
+            
+            currentX = newX;
+            currentY = newY;
+            
+            // Schedule next jump
+            setTimeout(() => {
+                frog.style.transform = `rotate(0deg) scale(1)`;
+                setTimeout(jump, Math.random() * 800 + 400); // 400-1200ms between jumps
+            }, 500);
+        }
+        
+        // Start jumping after a random delay
+        setTimeout(jump, Math.random() * 2000);
+    }
+
+    // Add styles for better animation
+    const style = document.createElement('style');
+    style.textContent = `
+        #frog-overlay div {
+            animation: bounce 0.5s infinite alternate;
+        }
+        @keyframes bounce {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-10px) rotate(2deg); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Add overlay to page
+    document.body.appendChild(overlay);
+    overlay.appendChild(closeBtn);
+
+    // Create multiple frogs
+    const numFrogs = Math.floor(Math.random() * 30) + 20; // 20-50 frogs
+    
+    for (let i = 0; i < numFrogs; i++) {
+        setTimeout(() => {
+            const frog = createFrog();
+            overlay.appendChild(frog);
+            animateFrog(frog);
+        }, i * 200); // Stagger frog creation
+    }
+
+    // Add custom sound effect
+    try {
+        const audio = new Audio('/Users/rhysfisher/Downloads/2025-06-10 17.00.49.ogg');
+        audio.volume = 0.1;
+        audio.play().catch(() => {}); // Ignore audio errors
+    } catch(e) {
+        console.error('Error playing audio:', e);
+    }
+
+    console.log(`🐸 ${numFrogs} frogs are now jumping across your screen! Click the button to swap!`);
+})(); 
