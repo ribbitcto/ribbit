@@ -1,0 +1,557 @@
+// 🐸 RIBBIT CLICKER GAME - Run in Dev Console
+(function() {
+    // Create game overlay
+    const gameOverlay = document.createElement('div');
+    gameOverlay.id = 'frog-game-overlay';
+    gameOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(135, 206, 235, 0.2);
+        backdrop-filter: blur(2px);
+        z-index: 9999;
+        pointer-events: auto;
+        overflow: hidden;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+    `;
+
+    // Add game styles
+    const gameStyles = document.createElement('style');
+    gameStyles.textContent = `
+        .frog-game-ui {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10002;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .frog-score {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2E8B57;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .frog-lily-counter {
+            background: rgba(220, 20, 60, 0.9);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .frog-lily-pad {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #32CD32 0%, #228B22 70%, #006400 100%);
+            border-radius: 60% 40% 60% 40%;
+            border: 3px solid #006400;
+            z-index: 10000;
+            box-shadow: 0 0 20px rgba(34, 139, 34, 0.6);
+            animation: frog-lily-float 3s ease-in-out infinite;
+        }
+
+        @keyframes frog-lily-float {
+            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+            50% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); }
+        }
+
+        .game-frog {
+            position: fixed;
+            font-size: 35px;
+            cursor: pointer;
+            z-index: 10001;
+            transition: all 0.2s ease;
+            user-select: none;
+            animation: frog-hop 0.8s ease-in-out infinite;
+        }
+
+        .game-frog:hover {
+            transform: scale(1.3);
+            filter: brightness(1.3) drop-shadow(0 0 10px rgba(255,255,0,0.8));
+        }
+
+        @keyframes frog-hop {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            25% { transform: translateY(-12px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            75% { transform: translateY(-8px) rotate(0deg); }
+        }
+
+        @keyframes frog-explode {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(2.5) rotate(180deg); opacity: 0.9; }
+            100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+
+        .frog-buy-text {
+            position: fixed;
+            font-size: 48px;
+            font-weight: bold;
+            color: #4CAF50;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            animation: frog-buy-pop 1.2s ease-out forwards;
+            pointer-events: none;
+            z-index: 10003;
+        }
+
+        @keyframes frog-buy-pop {
+            0% { 
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            70% { 
+                transform: scale(1.8) rotate(360deg);
+                opacity: 1;
+            }
+            100% { 
+                transform: scale(2.5) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .frog-start-btn {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 25px 50px;
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
+            z-index: 10004;
+            transition: all 0.3s ease;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        .frog-start-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 12px 35px rgba(76, 175, 80, 0.7);
+        }
+
+        .frog-close-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 10005;
+            transition: all 0.3s ease;
+        }
+
+        .frog-close-btn:hover {
+            background: #ff4444;
+            color: white;
+            border-color: #ff4444;
+        }
+
+        .frog-game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            z-index: 10006;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .frog-game-over h1 {
+            font-size: 36px;
+            color: #FF6B6B;
+            margin-bottom: 20px;
+        }
+
+        .frog-game-over p {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .frog-restart-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .frog-restart-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+    `;
+    document.head.appendChild(gameStyles);
+
+    // Game state
+    let gameState = {
+        running: false,
+        score: 0,
+        frogsOnLily: 0,
+        spawnRate: 4000, // Start slower - 4 seconds
+        frogs: [],
+        spawnInterval: null,
+        accelerationInterval: null,
+        lilyCenter: { x: window.innerWidth / 2, y: window.innerHeight / 2 }
+    };
+
+    // Create UI elements
+    function createUI() {
+        // Close button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'frog-close-btn';
+        closeBtn.innerHTML = '❌ Close';
+        closeBtn.onclick = () => endGame(true);
+
+        // UI container
+        const ui = document.createElement('div');
+        ui.className = 'frog-game-ui';
+        
+        const scoreDisplay = document.createElement('div');
+        scoreDisplay.className = 'frog-score';
+        scoreDisplay.id = 'frog-score-display';
+        scoreDisplay.textContent = 'RIBBITS: 0';
+        
+        const lilyCounter = document.createElement('div');
+        lilyCounter.className = 'frog-lily-counter';
+        lilyCounter.id = 'frog-lily-counter';
+        lilyCounter.textContent = 'FROGS ON LILY: 0/10';
+        lilyCounter.style.display = 'none';
+
+        ui.appendChild(scoreDisplay);
+        ui.appendChild(lilyCounter);
+
+        // Lily pad
+        const lilyPad = document.createElement('div');
+        lilyPad.className = 'frog-lily-pad';
+        lilyPad.id = 'frog-lily-pad';
+
+        // Start button
+        const startBtn = document.createElement('button');
+        startBtn.className = 'frog-start-btn';
+        startBtn.innerHTML = '🐸 START RIBBIT HUNT 🐸';
+        startBtn.onclick = startGame;
+
+        gameOverlay.appendChild(closeBtn);
+        gameOverlay.appendChild(ui);
+        gameOverlay.appendChild(lilyPad);
+        gameOverlay.appendChild(startBtn);
+    }
+
+    // Start the game
+    function startGame() {
+        gameState.running = true;
+        gameState.score = 0;
+        gameState.frogsOnLily = 0;
+        gameState.spawnRate = 4000;
+
+        document.querySelector('.frog-start-btn').style.display = 'none';
+        document.getElementById('frog-lily-counter').style.display = 'block';
+        
+        updateUI();
+        
+        // Start spawning frogs
+        gameState.spawnInterval = setInterval(spawnFrog, gameState.spawnRate);
+        
+        // Accelerate every 20 seconds
+        gameState.accelerationInterval = setInterval(accelerateGame, 20000);
+        
+        playRibbitSound();
+    }
+
+    // Spawn a frog
+    function spawnFrog() {
+        if (!gameState.running) return;
+
+        const frog = document.createElement('div');
+        frog.className = 'game-frog';
+        frog.innerHTML = '🐸';
+        
+        // Random spawn from edges (further out)
+        const side = Math.floor(Math.random() * 4);
+        let startX, startY;
+        
+        switch(side) {
+            case 0: // Top
+                startX = Math.random() * window.innerWidth;
+                startY = -80;
+                break;
+            case 1: // Right
+                startX = window.innerWidth + 80;
+                startY = Math.random() * window.innerHeight;
+                break;
+            case 2: // Bottom
+                startX = Math.random() * window.innerWidth;
+                startY = window.innerHeight + 80;
+                break;
+            case 3: // Left
+                startX = -80;
+                startY = Math.random() * window.innerHeight;
+                break;
+        }
+        
+        frog.style.left = startX + 'px';
+        frog.style.top = startY + 'px';
+        
+        // Click handler
+        frog.onclick = (e) => clickFrog(e, frog);
+        
+        gameOverlay.appendChild(frog);
+        gameState.frogs.push(frog);
+        
+        // Animate with jumping motion toward lily
+        animateFrogToLily(frog, startX, startY);
+    }
+
+    // Animate frog with realistic jumping
+    function animateFrogToLily(frog, startX, startY) {
+        const targetX = gameState.lilyCenter.x;
+        const targetY = gameState.lilyCenter.y;
+        
+        const deltaX = targetX - startX;
+        const deltaY = targetY - startY;
+        const totalDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+        // Slower, more realistic movement
+        const jumpDistance = 60; // Distance per jump
+        const jumpDuration = 1200; // Time per jump (slower)
+        const totalJumps = Math.ceil(totalDistance / jumpDistance);
+        
+        let currentJump = 0;
+        let currentX = startX;
+        let currentY = startY;
+        
+        function makeJump() {
+            if (!gameState.running || !frog.parentNode) return;
+            
+            currentJump++;
+            
+            // Calculate next position
+            const progress = currentJump / totalJumps;
+            const nextX = startX + (deltaX * progress);
+            const nextY = startY + (deltaY * progress);
+            
+            // Animate the jump
+            const jumpAnimation = frog.animate([
+                { 
+                    left: currentX + 'px', 
+                    top: currentY + 'px',
+                    transform: 'scale(1) rotate(0deg)'
+                },
+                { 
+                    left: (currentX + nextX) / 2 + 'px', 
+                    top: (currentY + nextY) / 2 - 30 + 'px',
+                    transform: 'scale(1.1) rotate(10deg)'
+                },
+                { 
+                    left: nextX + 'px', 
+                    top: nextY + 'px',
+                    transform: 'scale(1) rotate(0deg)'
+                }
+            ], {
+                duration: jumpDuration,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                fill: 'forwards'
+            });
+            
+            currentX = nextX;
+            currentY = nextY;
+            
+            jumpAnimation.addEventListener('finish', () => {
+                if (currentJump >= totalJumps) {
+                    // Frog reached lily pad
+                    if (frog.parentNode && gameState.running) {
+                        frogReachesLily(frog);
+                    }
+                } else {
+                    // Continue jumping
+                    setTimeout(makeJump, 200); // Small pause between jumps
+                }
+            });
+        }
+        
+        // Start the jumping sequence
+        makeJump();
+    }
+
+    // Handle frog click
+    function clickFrog(event, frog) {
+        event.stopPropagation();
+        if (!gameState.running) return;
+        
+        // Remove from frogs array
+        const index = gameState.frogs.indexOf(frog);
+        if (index > -1) {
+            gameState.frogs.splice(index, 1);
+        }
+        
+        // Get position for effects
+        const rect = frog.getBoundingClientRect();
+        
+        // Explosion effect
+        frog.style.animation = 'frog-explode 0.6s ease-out forwards';
+        
+        // Create "BUY" text
+        const buyText = document.createElement('div');
+        buyText.className = 'frog-buy-text';
+        buyText.innerHTML = 'BUY';
+        buyText.style.left = rect.left + rect.width/2 + 'px';
+        buyText.style.top = rect.top + rect.height/2 + 'px';
+        
+        gameOverlay.appendChild(buyText);
+        
+        // Clean up after animations
+        setTimeout(() => {
+            if (frog.parentNode) frog.remove();
+            if (buyText.parentNode) buyText.remove();
+        }, 1200);
+        
+        // Increase score
+        gameState.score++;
+        updateUI();
+        playRibbitSound();
+    }
+
+    // Frog reaches lily pad
+    function frogReachesLily(frog) {
+        gameState.frogsOnLily++;
+        
+        // Remove frog
+        if (frog.parentNode) frog.remove();
+        const index = gameState.frogs.indexOf(frog);
+        if (index > -1) {
+            gameState.frogs.splice(index, 1);
+        }
+        
+        updateUI();
+        
+        // Check game over
+        if (gameState.frogsOnLily >= 10) {
+            endGame(false);
+        }
+    }
+
+    // Accelerate game difficulty
+    function accelerateGame() {
+        if (!gameState.running) return;
+        
+        // Increase spawn rate (decrease interval)
+        gameState.spawnRate = Math.max(1500, gameState.spawnRate * 0.75);
+        
+        // Restart spawn timer with new rate
+        clearInterval(gameState.spawnInterval);
+        gameState.spawnInterval = setInterval(spawnFrog, gameState.spawnRate);
+        
+        // Visual feedback
+        gameOverlay.style.animation = 'none';
+        gameOverlay.offsetHeight; // Force reflow
+        gameOverlay.style.background = 'rgba(255, 192, 203, 0.3)';
+        setTimeout(() => {
+            gameOverlay.style.background = 'rgba(135, 206, 235, 0.2)';
+        }, 500);
+        
+        console.log(`🐸 SPEED INCREASED! Frogs now spawn every ${gameState.spawnRate}ms`);
+    }
+
+    // Update UI displays
+    function updateUI() {
+        document.getElementById('frog-score-display').textContent = `RIBBITS: ${gameState.score}`;
+        document.getElementById('frog-lily-counter').textContent = `FROGS ON LILY: ${gameState.frogsOnLily}/10`;
+    }
+
+    // End game
+    function endGame(isQuit) {
+        gameState.running = false;
+        clearInterval(gameState.spawnInterval);
+        clearInterval(gameState.accelerationInterval);
+        
+        // Remove all frogs
+        gameState.frogs.forEach(frog => {
+            if (frog.parentNode) frog.remove();
+        });
+        gameState.frogs = [];
+        
+        if (isQuit) {
+            gameOverlay.remove();
+            return;
+        }
+        
+        // Show game over screen
+        const gameOverScreen = document.createElement('div');
+        gameOverScreen.className = 'frog-game-over';
+        gameOverScreen.innerHTML = `
+            <h1>🐸 GAME OVER! 🐸</h1>
+            <p>The lily pad is overrun with frogs!</p>
+            <p>Final Score: <strong>${gameState.score} RIBBITS</strong></p>
+            <button class="frog-restart-btn" onclick="window.open('https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe', '_blank')">Buy Ribbit</button>
+            <button class="frog-restart-btn" onclick="this.parentNode.parentNode.remove()">Close Game</button>
+        `;
+        
+        gameOverlay.appendChild(gameOverScreen);
+    }
+
+    // Play ribbit sound
+    function playRibbitSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(120, audioContext.currentTime + 0.1);
+            oscillator.frequency.exponentialRampToValueAtTime(180, audioContext.currentTime + 0.2);
+            
+            gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        } catch(e) {
+            console.log('🐸 Audio not supported');
+        }
+    }
+
+    // Initialize game
+    document.body.appendChild(gameOverlay);
+    createUI();
+    
+    console.log('🐸 RIBBIT CLICKER GAME LOADED! Click the start button to begin hunting frogs!');
+    console.log('🎯 Goal: Click frogs before they reach the lily pad. Game ends when 10 frogs make it to the lily!');
+    
+})();
