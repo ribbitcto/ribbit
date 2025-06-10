@@ -225,7 +225,8 @@
         frogs: [],
         spawnInterval: null,
         accelerationInterval: null,
-        lilyCenter: { x: window.innerWidth / 2, y: window.innerHeight / 2 }
+        lilyCenter: { x: window.innerWidth / 2, y: window.innerHeight / 2 },
+        accelerationCount: 0 // Track number of accelerations
     };
 
     // Create UI elements
@@ -286,8 +287,8 @@
         // Start spawning frogs
         gameState.spawnInterval = setInterval(spawnFrog, gameState.spawnRate);
         
-        // Accelerate every 20 seconds
-        gameState.accelerationInterval = setInterval(accelerateGame, 20000);
+        // Accelerate every 15 seconds
+        gameState.accelerationInterval = setInterval(accelerateGame, 15000);
         
         playRibbitSound();
     }
@@ -469,7 +470,15 @@
         if (!gameState.running) return;
         
         // Increase spawn rate (decrease interval)
-        gameState.spawnRate = Math.max(1500, gameState.spawnRate * 0.75);
+        gameState.spawnRate = gameState.spawnRate * 0.75;
+        
+        // Increment acceleration counter
+        gameState.accelerationCount++;
+        
+        // Every 3 accelerations, spawn double frogs
+        if (gameState.accelerationCount % 3 === 0) {
+            spawnFrog(); // Spawn an extra frog immediately
+        }
         
         // Restart spawn timer with new rate
         clearInterval(gameState.spawnInterval);
