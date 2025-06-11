@@ -46,20 +46,7 @@
             document.body.style.filter = 'hue-rotate(45deg) contrast(120%)';
             console.log('🐸 Body glitch effect activated');
             
-            // RGB shift text elements
-            const textElements = document.querySelectorAll('h1, h2, h3, h4, p, span, .logo');
-            console.log('🐸 Found', textElements.length, 'text elements for RGB shift');
-            
-            textElements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.style.textShadow = '-2px 0 0 red, 2px 0 0 green, 0 2px 0 blue';
-                    el.style.transform = 'translate(' + (Math.random() * 4 - 2) + 'px, ' + (Math.random() * 4 - 2) + 'px)';
-                    setTimeout(() => {
-                        el.style.textShadow = '';
-                        el.style.transform = '';
-                    }, 200);
-                }, index * 15);
-            });
+            console.log('🐸 Starting continuous glitch effects during scroll...');
             
             // Start scroll immediately with glitch effects
             const buySection = document.getElementById('buy-ribbit');
@@ -74,40 +61,104 @@
             const targetPosition = buySection.offsetTop - 80;
             const startPosition = window.pageYOffset;
             const distance = targetPosition - startPosition;
-            const duration = 1200; // Slightly longer to see more glitch effects
+            const duration = 1100; // 25% shorter - snappy 1.1 second glitch journey
             let start = null;
+            let glitchInterval;
+            
+            // Start continuous glitch effects that run throughout the scroll
+            glitchInterval = setInterval(() => {
+                // CONTINUOUS RGB glitch on all text elements
+                const textElements = document.querySelectorAll('h1, h2, h3, h4, p, span, .logo, .nav-links a');
+                textElements.forEach(el => {
+                    if (Math.random() < 0.5) {
+                        const redOffset = Math.random() * 6 - 3;
+                        const greenOffset = Math.random() * 6 - 3;
+                        const blueOffset = Math.random() * 6 - 3;
+                        el.style.textShadow = `${redOffset}px 0 0 red, ${greenOffset}px 0 0 green, ${blueOffset}px 0 0 blue`;
+                        
+                        setTimeout(() => {
+                            el.style.textShadow = '';
+                        }, 80);
+                    }
+                });
+                
+                // CONTINUOUS section chaos - every frame
+                const sections = document.querySelectorAll('section, nav, header');
+                sections.forEach((section, index) => {
+                    if (Math.random() < 0.6) {
+                        const direction = index % 2 === 0 ? 1 : -1;
+                        const moveX = Math.random() * 10 * direction;
+                        const moveY = Math.random() * 5 - 2.5;
+                        const rotate = Math.random() * 3 - 1.5;
+                        
+                        section.style.transform = `translate(${moveX}px, ${moveY}px) rotate(${rotate}deg)`;
+                        
+                        setTimeout(() => {
+                            section.style.transform = '';
+                        }, 120);
+                    }
+                });
+                
+                // CONTINUOUS filter madness
+                document.body.style.filter = `hue-rotate(${Math.random() * 360}deg) contrast(${80 + Math.random() * 60}%) saturate(${60 + Math.random() * 120}%) brightness(${85 + Math.random() * 30}%)`;
+                
+            }, 70); // 70ms intervals = ~14fps of chaos (slightly faster for shorter duration)
             
             function animateScroll(timestamp) {
                 if (!start) start = timestamp;
                 const progress = Math.min((timestamp - start) / duration, 1);
                 
-                // Enhanced glitch stutters during scroll
-                const glitchOffset = Math.random() < 0.2 ? Math.random() * 30 - 15 : 0;
+                // Smooth scroll with constant glitch offsets
+                const glitchOffset = Math.random() * 40 - 20;
                 const easeProgress = progress < 0.5 
                     ? 4 * progress * progress * progress
                     : 1 - Math.pow(-2 * progress + 2, 3) / 2;
                 
-                // Add more intense glitch effects during scroll
-                const scrollGlitchX = Math.random() < 0.1 ? Math.random() * 6 - 3 : 0;
+                // Screen shake during scroll
+                const scrollGlitchX = Math.random() * 12 - 6;
                 
                 window.scrollTo(scrollGlitchX, startPosition + (distance * easeProgress) + glitchOffset);
-                
-                // Intensify body glitch during scroll
-                if (Math.random() < 0.3) {
-                    document.body.style.filter = `hue-rotate(${Math.random() * 90}deg) contrast(${100 + Math.random() * 40}%) saturate(${100 + Math.random() * 50}%)`;
-                }
                 
                 if (progress < 1) {
                     requestAnimationFrame(animateScroll);
                 } else {
-                    console.log('🐸 Scroll animation complete, cleaning up...');
-                    document.body.style.filter = '';
+                    console.log('🐸 Scroll complete, continuing glitch until Uniswap loads...');
+                    
+                    // Keep glitching until Uniswap loads!
+                    const checkUniswapLoaded = setInterval(() => {
+                        const iframe = document.getElementById('uniswap-iframe');
+                        const placeholder = document.getElementById('uniswap-placeholder');
+                        
+                        if (iframe && iframe.style.display !== 'none' && iframe.src) {
+                            console.log('🐸 Uniswap loaded! Stopping glitch effects...');
+                            clearInterval(glitchInterval);
+                            clearInterval(checkUniswapLoaded);
+                            
+                            // Clean up
+                            document.body.style.filter = '';
+                            const allElements = document.querySelectorAll('*');
+                            allElements.forEach(el => {
+                                el.style.transform = '';
+                                el.style.textShadow = '';
+                            });
+                            
+                            if (glitchOverlay.parentNode) {
+                                glitchOverlay.parentNode.removeChild(glitchOverlay);
+                            }
+                            window.glitchScrollActive = false;
+                        }
+                    }, 200);
+                    
+                    // Fallback cleanup after 3 seconds max
                     setTimeout(() => {
+                        clearInterval(glitchInterval);
+                        clearInterval(checkUniswapLoaded);
+                        document.body.style.filter = '';
                         if (glitchOverlay.parentNode) {
                             glitchOverlay.parentNode.removeChild(glitchOverlay);
                         }
                         window.glitchScrollActive = false;
-                    }, 300);
+                    }, 3000);
                 }
             }
             
