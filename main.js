@@ -216,58 +216,122 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ==================== YOUTUBE VIDEO TRACKING ====================
     
-    // Track YouTube video interactions (reliable container approach)
+    // Track YouTube video interactions using proper YouTube IFrame Player API
     function trackYouTubeEvents() {
         const iframe = document.querySelector('iframe[src*="youtube.com"]');
-        if (iframe) {
-            const videoContainer = iframe.closest('.video-container');
-            let hasTrackedPlay = false; // Prevent duplicate tracking
-            
-            if (videoContainer) {
-                // Track any interaction with the video container area
-                videoContainer.addEventListener('click', () => {
-                    if (!hasTrackedPlay) {
-                        trackUserAction('youtube video started');
-                        hasTrackedPlay = true;
-                        // Reset after 30 seconds to allow re-tracking
-                        setTimeout(() => {
-                            hasTrackedPlay = false;
-                        }, 30000);
-                    }
-                });
-                
-                // Also track mousedown for better coverage
-                videoContainer.addEventListener('mousedown', () => {
-                    if (!hasTrackedPlay) {
-                        trackUserAction('youtube video started');
-                        hasTrackedPlay = true;
-                        setTimeout(() => {
-                            hasTrackedPlay = false;
-                        }, 30000);
-                    }
-                });
-                
-                // Track when video comes into viewport (intersection observer)
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-                            // Video is visible, add hover tracking
-                            videoContainer.addEventListener('mouseenter', () => {
-                                console.log('🎥 User hovering over video');
-                            }, { once: true });
-                        }
-                    });
-                }, { threshold: 0.5 });
-                
-                observer.observe(videoContainer);
-                
-                console.log('🎥 YouTube video tracking initialized (container click method)');
-            } else {
-                console.log('🎥 YouTube video container not found');
-            }
-        } else {
+        if (!iframe) {
             console.log('🎥 YouTube iframe not found');
+            return;
         }
+
+        // Check if enablejsapi is enabled
+        if (!iframe.src.includes('enablejsapi=1')) {
+            console.log('🎥 YouTube iframe does not have enablejsapi=1 enabled');
+            return;
+        }
+
+        // Load YouTube IFrame Player API if not already loaded
+        if (!window.YT) {
+            // Load the YouTube API script
+            const script = document.createElement('script');
+            script.src = 'https://www.youtube.com/iframe_api';
+            script.async = true;
+            document.head.appendChild(script);
+            
+            // Set up the API ready callback
+            window.onYouTubeIframeAPIReady = initializeYouTubeTracking;
+        } else {
+            // API is already loaded
+            initializeYouTubeTracking();
+        }
+    }
+
+    function initializeYouTubeTracking() {
+        const iframe = document.querySelector('iframe[src*="youtube.com"]');
+        if (!iframe) return;
+
+        // Give the iframe an ID if it doesn't have one
+        if (!iframe.id) {
+            iframe.id = 'youtube-player-' + Date.now();
+        }
+
+        // Initialize the YouTube player
+        const player = new YT.Player(iframe.id, {
+            events: {
+                'onStateChange': onPlayerStateChange,
+                'onReady': onPlayerReady
+            }
+        });
+
+        let hasTrackedStart = false;
+        let progressTracked = {
+            25: false,
+            50: false,
+            75: false,
+            90: false
+        };
+
+        function onPlayerReady(event) {
+            console.log('🎥 YouTube player ready for tracking');
+        }
+
+        function onPlayerStateChange(event) {
+            const videoData = event.target.getVideoData();
+            const videoTitle = videoData.title || 'Unknown Video';
+            const videoUrl = `https://www.youtube.com/watch?v=${videoData.video_id}`;
+            
+            switch(event.data) {
+                case YT.PlayerState.PLAYING:
+                    if (!hasTrackedStart) {
+                        trackUserAction('youtube video started');
+                        console.log('🎥 Video started:', videoTitle);
+                        hasTrackedStart = true;
+                        
+                        // Start progress tracking
+                        startProgressTracking(event.target);
+                    }
+                    break;
+                    
+                case YT.PlayerState.PAUSED:
+                    trackUserAction('youtube video paused');
+                    console.log('🎥 Video paused:', videoTitle);
+                    break;
+                    
+                case YT.PlayerState.ENDED:
+                    trackUserAction('youtube video completed');
+                    console.log('🎥 Video completed:', videoTitle);
+                    break;
+            }
+        }
+
+        function startProgressTracking(player) {
+            const progressInterval = setInterval(() => {
+                if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
+                    return;
+                }
+
+                const currentTime = player.getCurrentTime();
+                const duration = player.getDuration();
+                const percentage = Math.round((currentTime / duration) * 100);
+
+                // Track progress milestones
+                Object.keys(progressTracked).forEach(milestone => {
+                    const milestoneNum = parseInt(milestone);
+                    if (percentage >= milestoneNum && !progressTracked[milestone]) {
+                        progressTracked[milestone] = true;
+                        trackUserAction(`youtube video ${milestone}% viewed`);
+                        console.log(`🎥 Video ${milestone}% viewed`);
+                    }
+                });
+
+                // Stop tracking when video ends or reaches 100%
+                if (percentage >= 100 || player.getPlayerState() === YT.PlayerState.ENDED) {
+                    clearInterval(progressInterval);
+                }
+            }, 1000); // Check every second
+        }
+
+        console.log('🎥 YouTube video tracking initialized (YouTube API method)');
     }
     
     // Initialize YouTube tracking
