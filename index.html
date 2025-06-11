@@ -6,6 +6,14 @@
     <title>🐸 RIBBIT - The Frog Meme Token</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-K65QK4MK');</script>
+    <!-- End Google Tag Manager -->
 </head>
 <body>
     <nav class="navbar">
@@ -129,6 +137,10 @@
         <div class="container">
             <h2>Add RIBBIT to your site</h2>
             <p class="code-description">Deploy this code via Google Tag Manager to your site, and try adding #ribbit to your URL</p>
+            <div style="margin: 20px 0;">
+                <button onclick="window.location.href = window.location.href.split('#')[0] + '#ribbit'" class="copy-button">🐸 Test Animation (Add #ribbit)</button>
+                <button onclick="testAnimationDirectly()" class="copy-button" style="margin-left: 10px;">🐸 Test Animation (Direct)</button>
+            </div>
             <div class="code-container">
                 <pre><code id="ribbit-code">// Frog Jump Animation - Run in Dev Console
 (function() {
@@ -144,6 +156,11 @@
     </section>
 
     <footer class="footer">
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K65QK4MK"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
