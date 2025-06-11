@@ -216,37 +216,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ==================== YOUTUBE VIDEO TRACKING ====================
     
-    // Track YouTube video interactions (simple iframe approach)
+    // Track YouTube video interactions (reliable container approach)
     function trackYouTubeEvents() {
         const iframe = document.querySelector('iframe[src*="youtube.com"]');
         if (iframe) {
-            // Track clicks on the iframe (most reliable indicator of play intent)
-            iframe.addEventListener('click', () => {
-                trackUserAction('youtube video started');
-            });
-            
-            // Track when iframe gains focus (another play indicator)
-            iframe.addEventListener('focus', () => {
-                trackUserAction('youtube video started');
-            }, true);
-            
-            // Alternative: Track when the video container is clicked
             const videoContainer = iframe.closest('.video-container');
+            let hasTrackedPlay = false; // Prevent duplicate tracking
+            
             if (videoContainer) {
-                videoContainer.addEventListener('click', (e) => {
-                    // Only track if the click is on or near the iframe
-                    const rect = iframe.getBoundingClientRect();
-                    const clickX = e.clientX;
-                    const clickY = e.clientY;
-                    
-                    if (clickX >= rect.left && clickX <= rect.right && 
-                        clickY >= rect.top && clickY <= rect.bottom) {
+                // Track any interaction with the video container area
+                videoContainer.addEventListener('click', () => {
+                    if (!hasTrackedPlay) {
                         trackUserAction('youtube video started');
+                        hasTrackedPlay = true;
+                        // Reset after 30 seconds to allow re-tracking
+                        setTimeout(() => {
+                            hasTrackedPlay = false;
+                        }, 30000);
                     }
                 });
+                
+                // Also track mousedown for better coverage
+                videoContainer.addEventListener('mousedown', () => {
+                    if (!hasTrackedPlay) {
+                        trackUserAction('youtube video started');
+                        hasTrackedPlay = true;
+                        setTimeout(() => {
+                            hasTrackedPlay = false;
+                        }, 30000);
+                    }
+                });
+                
+                // Track when video comes into viewport (intersection observer)
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                            // Video is visible, add hover tracking
+                            videoContainer.addEventListener('mouseenter', () => {
+                                console.log('🎥 User hovering over video');
+                            }, { once: true });
+                        }
+                    });
+                }, { threshold: 0.5 });
+                
+                observer.observe(videoContainer);
+                
+                console.log('🎥 YouTube video tracking initialized (container click method)');
+            } else {
+                console.log('🎥 YouTube video container not found');
             }
-            
-            console.log('🎥 YouTube video tracking initialized (iframe click method)');
+        } else {
+            console.log('🎥 YouTube iframe not found');
         }
     }
     
