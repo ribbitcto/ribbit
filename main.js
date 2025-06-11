@@ -216,35 +216,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ==================== YOUTUBE VIDEO TRACKING ====================
     
-    // Track YouTube video play events
+    // Track YouTube video interactions (simple iframe approach)
     function trackYouTubeEvents() {
-        // Load YouTube iframe API if it doesn't exist
-        if (!window.YT) {
-            const tag = document.createElement('script');
-            tag.src = 'https://www.youtube.com/iframe_api';
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        }
-        
-        // YouTube API ready callback
-        window.onYouTubeIframeAPIReady = function() {
-            const iframe = document.querySelector('iframe[src*="youtube.com"]');
-            if (iframe) {
-                const player = new YT.Player(iframe, {
-                    events: {
-                        'onStateChange': function(event) {
-                            if (event.data === YT.PlayerState.PLAYING) {
-                                trackUserAction('youtube video started');
-                            }
-                        }
+        const iframe = document.querySelector('iframe[src*="youtube.com"]');
+        if (iframe) {
+            // Track clicks on the iframe (most reliable indicator of play intent)
+            iframe.addEventListener('click', () => {
+                trackUserAction('youtube video started');
+            });
+            
+            // Track when iframe gains focus (another play indicator)
+            iframe.addEventListener('focus', () => {
+                trackUserAction('youtube video started');
+            }, true);
+            
+            // Alternative: Track when the video container is clicked
+            const videoContainer = iframe.closest('.video-container');
+            if (videoContainer) {
+                videoContainer.addEventListener('click', (e) => {
+                    // Only track if the click is on or near the iframe
+                    const rect = iframe.getBoundingClientRect();
+                    const clickX = e.clientX;
+                    const clickY = e.clientY;
+                    
+                    if (clickX >= rect.left && clickX <= rect.right && 
+                        clickY >= rect.top && clickY <= rect.bottom) {
+                        trackUserAction('youtube video started');
                     }
                 });
             }
-        };
-        
-        // If API is already loaded, initialize immediately
-        if (window.YT && window.YT.Player) {
-            window.onYouTubeIframeAPIReady();
+            
+            console.log('🎥 YouTube video tracking initialized (iframe click method)');
         }
     }
     
