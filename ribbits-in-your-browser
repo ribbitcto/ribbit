@@ -43,203 +43,173 @@
         return;
     }
 
-    // ==================== EXACT WORKING GAME CODE FROM GAME.JS ====================
+    // ==================== EXACT WORKING GAME CODE FROM GAME.JS (ES5 VERSION) ====================
     // 🐸 RIBBIT CLICKER GAME
     // Create game overlay
-    const gameOverlay = document.createElement('div');
+    var gameOverlay = document.createElement('div');
     gameOverlay.id = 'frog-animation-game-overlay';
-    gameOverlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(135, 206, 235, 0.2);
-        backdrop-filter: blur(2px);
-        z-index: 9999;
-        pointer-events: auto;
-        overflow: hidden;
-        font-family: 'Comic Sans MS', cursive, sans-serif;
-        display: none;
-    `;
+    gameOverlay.style.cssText = 'position: fixed;' +
+        'top: 0;' +
+        'left: 0;' +
+        'width: 100vw;' +
+        'height: 100vh;' +
+        'background: rgba(135, 206, 235, 0.2);' +
+        'backdrop-filter: blur(2px);' +
+        'z-index: 9999;' +
+        'pointer-events: auto;' +
+        'overflow: hidden;' +
+        'font-family: "Comic Sans MS", cursive, sans-serif;' +
+        'display: none;';
 
     // Add game styles
-    const gameStyles = document.createElement('style');
-    gameStyles.textContent = `
-        .frog-game-ui {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 10002;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: flex-end;
-        }
-
-        .frog-score {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 25px;
-            border-radius: 25px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #2E8B57;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .frog-lily-counter {
-            background: rgba(220, 20, 60, 0.9);
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .frog-lily-pad {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, #32CD32 0%, #228B22 70%, #006400 100%);
-            border-radius: 60% 40% 60% 40%;
-            border: 3px solid #006400;
-            z-index: 10000;
-            box-shadow: 0 0 20px rgba(34, 139, 34, 0.6);
-            animation: frog-lily-float 3s ease-in-out infinite;
-        }
-
-        @keyframes frog-lily-float {
-            0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
-            50% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); }
-        }
-
-        .game-frog {
-            position: fixed;
-            font-size: 35px;
-            cursor: pointer;
-            z-index: 10001;
-            transition: all 0.2s ease;
-            user-select: none;
-            animation: frog-hop 0.8s ease-in-out infinite;
-        }
-
-        .game-frog:hover {
-            transform: scale(1.3);
-            filter: brightness(1.3) drop-shadow(0 0 10px rgba(255,255,0,0.8));
-        }
-
-        @keyframes frog-hop {
-            0%, 100% { transform: translateY(0px) rotate(-5deg); }
-            25% { transform: translateY(-12px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-            75% { transform: translateY(-8px) rotate(0deg); }
-        }
-
-        @keyframes frog-explode {
-            0% { transform: scale(1) rotate(0deg); opacity: 1; }
-            50% { transform: scale(2.5) rotate(180deg); opacity: 0.9; }
-            100% { transform: scale(0) rotate(360deg); opacity: 0; }
-        }
-
-        .frog-buy-text {
-            position: fixed;
-            font-size: 48px;
-            font-weight: bold;
-            color: #4CAF50;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
-            animation: frog-buy-pop 1.2s ease-out forwards;
-            pointer-events: none;
-            z-index: 10003;
-        }
-
-        @keyframes frog-buy-pop {
-            0% { 
-                transform: scale(0) rotate(0deg);
-                opacity: 1;
-            }
-            70% { 
-                transform: scale(1.8) rotate(360deg);
-                opacity: 1;
-            }
-            100% { 
-                transform: scale(2.5) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        .frog-close-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-            border: 2px solid #ddd;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            z-index: 10005;
-            transition: all 0.3s ease;
-        }
-
-        .frog-close-btn:hover {
-            background: #ff4444;
-            color: white;
-            border-color: #ff4444;
-        }
-
-        .frog-game-over {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            color: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            z-index: 10006;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-        }
-
-        .frog-game-over h1 {
-            font-size: 36px;
-            color: #FF6B6B;
-            margin-bottom: 20px;
-        }
-
-        .frog-game-over p {
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
-
-        .frog-restart-btn {
-            padding: 15px 30px;
-            font-size: 18px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            margin: 10px;
-            transition: all 0.3s ease;
-        }
-
-        .frog-restart-btn:hover {
-            background: #45a049;
-            transform: scale(1.05);
-        }
-    `;
+    var gameStyles = document.createElement('style');
+    gameStyles.textContent = '.frog-game-ui {' +
+        'position: fixed;' +
+        'top: 20px;' +
+        'right: 20px;' +
+        'z-index: 10002;' +
+        'display: flex;' +
+        'flex-direction: column;' +
+        'gap: 10px;' +
+        'align-items: flex-end;' +
+        '}' +
+        '.frog-score {' +
+        'background: rgba(255, 255, 255, 0.95);' +
+        'padding: 15px 25px;' +
+        'border-radius: 25px;' +
+        'font-size: 24px;' +
+        'font-weight: bold;' +
+        'color: #2E8B57;' +
+        'box-shadow: 0 4px 15px rgba(0,0,0,0.3);' +
+        'backdrop-filter: blur(10px);' +
+        '}' +
+        '.frog-lily-counter {' +
+        'background: rgba(220, 20, 60, 0.9);' +
+        'padding: 12px 20px;' +
+        'border-radius: 25px;' +
+        'font-size: 18px;' +
+        'font-weight: bold;' +
+        'color: white;' +
+        'box-shadow: 0 4px 15px rgba(0,0,0,0.3);' +
+        '}' +
+        '.frog-lily-pad {' +
+        'position: fixed;' +
+        'top: 50%;' +
+        'left: 50%;' +
+        'transform: translate(-50%, -50%);' +
+        'width: 100px;' +
+        'height: 100px;' +
+        'background: radial-gradient(circle, #32CD32 0%, #228B22 70%, #006400 100%);' +
+        'border-radius: 60% 40% 60% 40%;' +
+        'border: 3px solid #006400;' +
+        'z-index: 10000;' +
+        'box-shadow: 0 0 20px rgba(34, 139, 34, 0.6);' +
+        'animation: frog-lily-float 3s ease-in-out infinite;' +
+        '}' +
+        '@keyframes frog-lily-float {' +
+        '0%, 100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }' +
+        '50% { transform: translate(-50%, -50%) scale(1.05) rotate(2deg); }' +
+        '}' +
+        '.game-frog {' +
+        'position: fixed;' +
+        'font-size: 35px;' +
+        'cursor: pointer;' +
+        'z-index: 10001;' +
+        'transition: all 0.2s ease;' +
+        'user-select: none;' +
+        'animation: frog-hop 0.8s ease-in-out infinite;' +
+        '}' +
+        '.game-frog:hover {' +
+        'transform: scale(1.3);' +
+        'filter: brightness(1.3) drop-shadow(0 0 10px rgba(255,255,0,0.8));' +
+        '}' +
+        '@keyframes frog-hop {' +
+        '0%, 100% { transform: translateY(0px) rotate(-5deg); }' +
+        '25% { transform: translateY(-12px) rotate(0deg); }' +
+        '50% { transform: translateY(-20px) rotate(5deg); }' +
+        '75% { transform: translateY(-8px) rotate(0deg); }' +
+        '}' +
+        '@keyframes frog-explode {' +
+        '0% { transform: scale(1) rotate(0deg); opacity: 1; }' +
+        '50% { transform: scale(2.5) rotate(180deg); opacity: 0.9; }' +
+        '100% { transform: scale(0) rotate(360deg); opacity: 0; }' +
+        '}' +
+        '.frog-buy-text {' +
+        'position: fixed;' +
+        'font-size: 48px;' +
+        'font-weight: bold;' +
+        'color: #4CAF50;' +
+        'text-shadow: 3px 3px 6px rgba(0,0,0,0.8);' +
+        'animation: frog-buy-pop 1.2s ease-out forwards;' +
+        'pointer-events: none;' +
+        'z-index: 10003;' +
+        '}' +
+        '@keyframes frog-buy-pop {' +
+        '0% { transform: scale(0) rotate(0deg); opacity: 1; }' +
+        '70% { transform: scale(1.8) rotate(360deg); opacity: 1; }' +
+        '100% { transform: scale(2.5) rotate(720deg); opacity: 0; }' +
+        '}' +
+        '.frog-close-btn {' +
+        'position: fixed;' +
+        'top: 20px;' +
+        'left: 20px;' +
+        'padding: 10px 15px;' +
+        'background: rgba(255, 255, 255, 0.9);' +
+        'color: #333;' +
+        'border: 2px solid #ddd;' +
+        'border-radius: 25px;' +
+        'cursor: pointer;' +
+        'font-size: 16px;' +
+        'font-weight: bold;' +
+        'z-index: 10005;' +
+        'transition: all 0.3s ease;' +
+        '}' +
+        '.frog-close-btn:hover {' +
+        'background: #ff4444;' +
+        'color: white;' +
+        'border-color: #ff4444;' +
+        '}' +
+        '.frog-game-over {' +
+        'position: fixed;' +
+        'top: 50%;' +
+        'left: 50%;' +
+        'transform: translate(-50%, -50%);' +
+        'background: rgba(0, 0, 0, 0.95);' +
+        'color: white;' +
+        'padding: 40px;' +
+        'border-radius: 20px;' +
+        'text-align: center;' +
+        'z-index: 10006;' +
+        'box-shadow: 0 0 50px rgba(0,0,0,0.8);' +
+        '}' +
+        '.frog-game-over h1 {' +
+        'font-size: 36px;' +
+        'color: #FF6B6B;' +
+        'margin-bottom: 20px;' +
+        '}' +
+        '.frog-game-over p {' +
+        'font-size: 20px;' +
+        'margin-bottom: 20px;' +
+        '}' +
+        '.frog-restart-btn {' +
+        'padding: 15px 30px;' +
+        'font-size: 18px;' +
+        'background: #4CAF50;' +
+        'color: white;' +
+        'border: none;' +
+        'border-radius: 25px;' +
+        'cursor: pointer;' +
+        'margin: 10px;' +
+        'transition: all 0.3s ease;' +
+        '}' +
+        '.frog-restart-btn:hover {' +
+        'background: #45a049;' +
+        'transform: scale(1.05);' +
+        '}';
     document.head.appendChild(gameStyles);
 
     // Game state
-    let gameState = {
+    var gameState = {
         running: false,
         score: 0,
         frogsOnLily: 0,
@@ -254,21 +224,21 @@
     // Create UI elements
     function createUI() {
         // Close button
-        const closeBtn = document.createElement('button');
+        var closeBtn = document.createElement('button');
         closeBtn.className = 'frog-close-btn';
         closeBtn.innerHTML = '❌ Close';
-        closeBtn.onclick = () => endGame(true);
+        closeBtn.onclick = function() { endGame(true); };
 
         // UI container
-        const ui = document.createElement('div');
+        var ui = document.createElement('div');
         ui.className = 'frog-game-ui';
         
-        const scoreDisplay = document.createElement('div');
+        var scoreDisplay = document.createElement('div');
         scoreDisplay.className = 'frog-score';
         scoreDisplay.id = 'frog-animation-score-display';
         scoreDisplay.textContent = 'RIBBITS: 0';
         
-        const lilyCounter = document.createElement('div');
+        var lilyCounter = document.createElement('div');
         lilyCounter.className = 'frog-lily-counter';
         lilyCounter.id = 'frog-animation-lily-counter';
         lilyCounter.textContent = 'FROGS ON LILY: 0/10';
@@ -278,7 +248,7 @@
         ui.appendChild(lilyCounter);
 
         // Lily pad
-        const lilyPad = document.createElement('div');
+        var lilyPad = document.createElement('div');
         lilyPad.className = 'frog-lily-pad';
         lilyPad.id = 'frog-animation-lily-pad';
 
@@ -296,7 +266,7 @@
         gameState.accelerationCount = 0;
 
         // Hide the original animation buttons when game starts
-        const buttonContainer = document.querySelector('#frog-overlay > div');
+        var buttonContainer = document.querySelector('#frog-overlay > div');
         if (buttonContainer) {
             buttonContainer.style.display = 'none';
         }
@@ -319,13 +289,13 @@
     function spawnFrog() {
         if (!gameState.running) return;
 
-        const frog = document.createElement('div');
+        var frog = document.createElement('div');
         frog.className = 'game-frog';
         frog.innerHTML = '🐸';
         
         // Random spawn from edges (further out)
-        const side = Math.floor(Math.random() * 4);
-        let startX, startY;
+        var side = Math.floor(Math.random() * 4);
+        var startX, startY;
         
         switch(side) {
             case 0: // Top
@@ -350,7 +320,7 @@
         frog.style.top = startY + 'px';
         
         // Click handler
-        frog.onclick = (e) => clickFrog(e, frog);
+        frog.onclick = function(e) { clickFrog(e, frog); };
         
         gameOverlay.appendChild(frog);
         gameState.frogs.push(frog);
@@ -361,21 +331,21 @@
 
     // Animate frog with realistic jumping
     function animateFrogToLily(frog, startX, startY) {
-        const targetX = gameState.lilyCenter.x;
-        const targetY = gameState.lilyCenter.y;
+        var targetX = gameState.lilyCenter.x;
+        var targetY = gameState.lilyCenter.y;
         
-        const deltaX = targetX - startX;
-        const deltaY = targetY - startY;
-        const totalDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        var deltaX = targetX - startX;
+        var deltaY = targetY - startY;
+        var totalDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
         
         // Slower, more realistic movement
-        const jumpDistance = 60; // Distance per jump
-        const jumpDuration = 1200; // Time per jump (slower)
-        const totalJumps = Math.ceil(totalDistance / jumpDistance);
+        var jumpDistance = 60; // Distance per jump
+        var jumpDuration = 1200; // Time per jump (slower)
+        var totalJumps = Math.ceil(totalDistance / jumpDistance);
         
-        let currentJump = 0;
-        let currentX = startX;
-        let currentY = startY;
+        var currentJump = 0;
+        var currentX = startX;
+        var currentY = startY;
         
         function makeJump() {
             if (!gameState.running || !frog.parentNode) return;
@@ -383,12 +353,12 @@
             currentJump++;
             
             // Calculate next position
-            const progress = currentJump / totalJumps;
-            const nextX = startX + (deltaX * progress);
-            const nextY = startY + (deltaY * progress);
+            var progress = currentJump / totalJumps;
+            var nextX = startX + (deltaX * progress);
+            var nextY = startY + (deltaY * progress);
             
             // Animate the jump
-            const jumpAnimation = frog.animate([
+            var jumpAnimation = frog.animate([
                 { 
                     left: currentX + 'px', 
                     top: currentY + 'px',
@@ -413,7 +383,7 @@
             currentX = nextX;
             currentY = nextY;
             
-            jumpAnimation.addEventListener('finish', () => {
+            jumpAnimation.addEventListener('finish', function() {
                 if (currentJump >= totalJumps) {
                     // Frog reached lily pad
                     if (frog.parentNode && gameState.running) {
@@ -436,19 +406,19 @@
         if (!gameState.running) return;
         
         // Remove from frogs array
-        const index = gameState.frogs.indexOf(frog);
+        var index = gameState.frogs.indexOf(frog);
         if (index > -1) {
             gameState.frogs.splice(index, 1);
         }
         
         // Get position for effects
-        const rect = frog.getBoundingClientRect();
+        var rect = frog.getBoundingClientRect();
         
         // Explosion effect
         frog.style.animation = 'frog-explode 0.6s ease-out forwards';
         
         // Create "BUY" text
-        const buyText = document.createElement('div');
+        var buyText = document.createElement('div');
         buyText.className = 'frog-buy-text';
         buyText.innerHTML = 'BUY';
         buyText.style.left = rect.left + rect.width/2 + 'px';
@@ -457,7 +427,7 @@
         gameOverlay.appendChild(buyText);
         
         // Clean up after animations
-        setTimeout(() => {
+        setTimeout(function() {
             if (frog.parentNode) frog.remove();
             if (buyText.parentNode) buyText.remove();
         }, 1200);
@@ -474,7 +444,7 @@
         
         // Remove frog
         if (frog.parentNode) frog.remove();
-        const index = gameState.frogs.indexOf(frog);
+        var index = gameState.frogs.indexOf(frog);
         if (index > -1) {
             gameState.frogs.splice(index, 1);
         }
@@ -510,17 +480,17 @@
         gameOverlay.style.animation = 'none';
         gameOverlay.offsetHeight; // Force reflow
         gameOverlay.style.background = 'rgba(255, 192, 203, 0.3)';
-        setTimeout(() => {
+        setTimeout(function() {
             gameOverlay.style.background = 'rgba(135, 206, 235, 0.2)';
         }, 500);
         
-        console.log(`🐸 SPEED INCREASED! Frogs now spawn every ${gameState.spawnRate}ms`);
+        console.log('🐸 SPEED INCREASED! Frogs now spawn every ' + gameState.spawnRate + 'ms');
     }
 
     // Update UI displays
     function updateUI() {
-        document.getElementById('frog-animation-score-display').textContent = `RIBBITS: ${gameState.score}`;
-        document.getElementById('frog-animation-lily-counter').textContent = `FROGS ON LILY: ${gameState.frogsOnLily}/10`;
+        document.getElementById('frog-animation-score-display').textContent = 'RIBBITS: ' + gameState.score;
+        document.getElementById('frog-animation-lily-counter').textContent = 'FROGS ON LILY: ' + gameState.frogsOnLily + '/10';
     }
 
     // End game
@@ -530,15 +500,15 @@
         clearInterval(gameState.accelerationInterval);
         
         // Remove all frogs
-        gameState.frogs.forEach(frog => {
-            if (frog.parentNode) frog.remove();
-        });
+        for (var i = 0; i < gameState.frogs.length; i++) {
+            if (gameState.frogs[i].parentNode) gameState.frogs[i].remove();
+        }
         gameState.frogs = [];
         
         if (isQuit) {
             gameOverlay.style.display = 'none';
             // Show the original animation buttons again
-            const buttonContainer = document.querySelector('#frog-overlay > div');
+            var buttonContainer = document.querySelector('#frog-overlay > div');
             if (buttonContainer) {
                 buttonContainer.style.display = 'flex';
             }
@@ -546,15 +516,13 @@
         }
         
         // Show game over screen
-        const gameOverScreen = document.createElement('div');
+        var gameOverScreen = document.createElement('div');
         gameOverScreen.className = 'frog-game-over';
-        gameOverScreen.innerHTML = `
-            <h1>🐸 GAME OVER! 🐸</h1>
-            <p>The lily pad is overrun with frogs!</p>
-            <p>Final Score: <strong>${gameState.score} RIBBITS</strong></p>
-            <button class="frog-restart-btn" onclick="window.open('https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe', '_blank')">Buy Ribbit</button>
-            <button class="frog-restart-btn" onclick="this.parentNode.parentNode.remove()">Close Game</button>
-        `;
+        gameOverScreen.innerHTML = '<h1>🐸 GAME OVER! 🐸</h1>' +
+            '<p>The lily pad is overrun with frogs!</p>' +
+            '<p>Final Score: <strong>' + gameState.score + ' RIBBITS</strong></p>' +
+            '<button class="frog-restart-btn" onclick="window.open(\'https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe\', \'_blank\')">Buy Ribbit</button>' +
+            '<button class="frog-restart-btn" onclick="this.parentNode.parentNode.remove()">Close Game</button>';
         
         gameOverlay.appendChild(gameOverScreen);
     }
@@ -562,9 +530,9 @@
     // Play ribbit sound
     function playRibbitSound() {
         try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gain = audioContext.createGain();
+            var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            var oscillator = audioContext.createOscillator();
+            var gain = audioContext.createGain();
             
             oscillator.connect(gain);
             gain.connect(audioContext.destination);
@@ -596,7 +564,7 @@
     // ==================== ORIGINAL ANIMATION ====================
     
     // Configuration (can be overridden via GTM variables)
-    const config = {
+    var config = {
         numFrogs: Math.floor(Math.random() * 30) + 20, // 20-50 frogs
         audioUrl: null, // Set via GTM variable if needed
         uniswapUrl: 'https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe'
@@ -604,8 +572,8 @@
     
     // Override config with GTM variables if available
     if (typeof window.gtmFrogConfig !== 'undefined') {
-        const gtmConfig = window.gtmFrogConfig;
-        for (const key in gtmConfig) {
+        var gtmConfig = window.gtmFrogConfig;
+        for (var key in gtmConfig) {
             if (gtmConfig.hasOwnProperty(key)) {
                 config[key] = gtmConfig[key];
             }
@@ -613,48 +581,42 @@
     }
 
     // Create overlay container
-    const overlay = document.createElement('div');
+    var overlay = document.createElement('div');
     overlay.id = 'frog-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(135, 206, 235, 0.3);
-        z-index: 10000;
-        pointer-events: none;
-        overflow: hidden;
-    `;
+    overlay.style.cssText = 'position: fixed;' +
+        'top: 0;' +
+        'left: 0;' +
+        'width: 100vw;' +
+        'height: 100vh;' +
+        'background: rgba(135, 206, 235, 0.3);' +
+        'z-index: 10000;' +
+        'pointer-events: none;' +
+        'overflow: hidden;';
 
     // Create button container
-    const buttonContainer = document.createElement('div');
-    buttonContainer.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 10001;
-        display: flex;
-        gap: 10px;
-        pointer-events: auto;
-    `;
+    var buttonContainer = document.createElement('div');
+    buttonContainer.style.cssText = 'position: fixed;' +
+        'top: 20px;' +
+        'right: 20px;' +
+        'z-index: 10001;' +
+        'display: flex;' +
+        'gap: 10px;' +
+        'pointer-events: auto;';
 
     // Add buy ribbit button
-    const buyBtn = document.createElement('button');
+    var buyBtn = document.createElement('button');
     buyBtn.innerHTML = 'buy ribbit <span style="margin-left: 8px; font-size: 12px;">✕</span>';
-    buyBtn.style.cssText = `
-        padding: 10px 15px;
-        background: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-family: Arial, sans-serif;
-    `;
+    buyBtn.style.cssText = 'padding: 10px 15px;' +
+        'background: #4CAF50;' +
+        'color: white;' +
+        'border: none;' +
+        'border-radius: 5px;' +
+        'cursor: pointer;' +
+        'font-size: 14px;' +
+        'display: flex;' +
+        'align-items: center;' +
+        'gap: 8px;' +
+        'font-family: Arial, sans-serif;';
     
     buyBtn.onclick = function(e) {
         e.preventDefault();
@@ -685,18 +647,16 @@
     };
 
     // Add play game button
-    const playBtn = document.createElement('button');
+    var playBtn = document.createElement('button');
     playBtn.innerHTML = '🎮 play game';
-    playBtn.style.cssText = `
-        padding: 10px 15px;
-        background: #FF6B6B;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 14px;
-        font-family: Arial, sans-serif;
-    `;
+    playBtn.style.cssText = 'padding: 10px 15px;' +
+        'background: #FF6B6B;' +
+        'color: white;' +
+        'border: none;' +
+        'border-radius: 5px;' +
+        'cursor: pointer;' +
+        'font-size: 14px;' +
+        'font-family: Arial, sans-serif;';
     
     playBtn.onclick = function(e) {
         e.preventDefault();
@@ -719,21 +679,19 @@
 
     // Create frog element
     function createFrog() {
-        const frog = document.createElement('div');
-        const size = Math.random() * 30 + 20; // 20-50px
+        var frog = document.createElement('div');
+        var size = Math.random() * 30 + 20; // 20-50px
         
         frog.innerHTML = '🐸';
-        frog.style.cssText = `
-            position: absolute;
-            font-size: ${size}px;
-            user-select: none;
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            will-change: transform, left, top;
-        `;
+        frog.style.cssText = 'position: absolute;' +
+            'font-size: ' + size + 'px;' +
+            'user-select: none;' +
+            'transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);' +
+            'will-change: transform, left, top;';
 
         // Random starting position
-        const startX = Math.random() * (window.innerWidth - size);
-        const startY = window.innerHeight + size;
+        var startX = Math.random() * (window.innerWidth - size);
+        var startY = window.innerHeight + size;
         
         frog.style.left = startX + 'px';
         frog.style.top = startY + 'px';
@@ -743,12 +701,12 @@
 
     // Animate frog jumping
     function animateFrog(frog) {
-        const jumpHeight = Math.random() * 200 + 100; // 100-300px jump
-        const jumpDistance = Math.random() * 300 + 50; // 50-350px horizontal
-        const direction = Math.random() > 0.5 ? 1 : -1; // left or right
+        var jumpHeight = Math.random() * 200 + 100; // 100-300px jump
+        var jumpDistance = Math.random() * 300 + 50; // 50-350px horizontal
+        var direction = Math.random() > 0.5 ? 1 : -1; // left or right
         
-        let currentX = parseFloat(frog.style.left);
-        let currentY = parseFloat(frog.style.top);
+        var currentX = parseFloat(frog.style.left);
+        var currentY = parseFloat(frog.style.top);
         
         function jump() {
             // Clean up if frog is off screen or overlay is removed
@@ -760,12 +718,12 @@
             }
 
             // Calculate new position
-            const newX = Math.max(0, Math.min(window.innerWidth - 50, 
+            var newX = Math.max(0, Math.min(window.innerWidth - 50, 
                 currentX + (jumpDistance * direction * (Math.random() * 0.5 + 0.5))));
-            const newY = currentY - jumpHeight;
+            var newY = currentY - jumpHeight;
             
             // Apply jump animation
-            frog.style.transform = `rotate(${direction * 15}deg) scale(${1 + Math.random() * 0.3})`;
+            frog.style.transform = 'rotate(' + (direction * 15) + 'deg) scale(' + (1 + Math.random() * 0.3) + ')';
             frog.style.left = newX + 'px';
             frog.style.top = newY + 'px';
             
@@ -773,7 +731,7 @@
             currentY = newY;
             
             // Schedule next jump
-            setTimeout(() => {
+            setTimeout(function() {
                 if (frog.parentNode) {
                     frog.style.transform = 'rotate(0deg) scale(1)';
                     setTimeout(jump, Math.random() * 800 + 400); // 400-1200ms between jumps
@@ -786,17 +744,15 @@
     }
 
     // Add styles for better animation
-    const style = document.createElement('style');
+    var style = document.createElement('style');
     style.id = 'frog-animation-styles';
-    style.textContent = `
-        #frog-overlay div:not(button) {
-            animation: bounce 0.5s infinite alternate;
-        }
-        @keyframes bounce {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-10px) rotate(2deg); }
-        }
-    `;
+    style.textContent = '#frog-overlay div:not(button) {' +
+        'animation: bounce 0.5s infinite alternate;' +
+        '}' +
+        '@keyframes bounce {' +
+        '0% { transform: translateY(0px) rotate(0deg); }' +
+        '100% { transform: translateY(-10px) rotate(2deg); }' +
+        '}';
     
     // Only add styles if not already present
     if (!document.getElementById('frog-animation-styles')) {
@@ -808,23 +764,25 @@
     overlay.appendChild(buttonContainer);
 
     // Create multiple frogs
-    for (let i = 0; i < config.numFrogs; i++) {
-        setTimeout(() => {
-            // Check if overlay still exists before creating frog
-            if (document.getElementById('frog-overlay')) {
-                const frog = createFrog();
-                overlay.appendChild(frog);
-                animateFrog(frog);
-            }
-        }, i * 200); // Stagger frog creation
+    for (var i = 0; i < config.numFrogs; i++) {
+        (function(index) {
+            setTimeout(function() {
+                // Check if overlay still exists before creating frog
+                if (document.getElementById('frog-overlay')) {
+                    var frog = createFrog();
+                    overlay.appendChild(frog);
+                    animateFrog(frog);
+                }
+            }, index * 200); // Stagger frog creation
+        })(i);
     }
 
     // Add custom sound effect if URL is provided
     if (config.audioUrl) {
         try {
-            const audio = new Audio(config.audioUrl);
+            var audio = new Audio(config.audioUrl);
             audio.volume = 0.1;
-            audio.play().catch(() => {
+            audio.play().catch(function() {
                 console.log('🐸 Audio playback failed (user interaction required)');
             });
         } catch(e) {
@@ -841,11 +799,11 @@
         });
     }
 
-    console.log(`🐸 ${config.numFrogs} frogs are now jumping across your screen! Click the buttons!`);
+    console.log('🐸 ' + config.numFrogs + ' frogs are now jumping across your screen! Click the buttons!');
     
     // Auto-cleanup after 60 seconds to prevent memory leaks
-    setTimeout(() => {
-        const overlayElement = document.getElementById('frog-overlay');
+    setTimeout(function() {
+        var overlayElement = document.getElementById('frog-overlay');
         if (overlayElement && overlayElement.parentNode) {
             overlayElement.parentNode.removeChild(overlayElement);
             console.log('🐸 Frog animation auto-cleanup completed');
