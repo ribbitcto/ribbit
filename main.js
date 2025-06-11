@@ -1,4 +1,146 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize dataLayer if it doesn't exist
+    window.dataLayer = window.dataLayer || [];
+    
+    // Helper function to push analytics events
+    function trackUserAction(eventName) {
+        window.dataLayer.push({
+            'event': 'user_action',
+            'event_name': eventName
+        });
+        console.log('📊 Analytics Event:', eventName);
+    }
+
+    // ==================== BUY BUTTON TRACKING ====================
+    
+    // Track header buy button
+    const headerBuyButton = document.querySelector('.buy-button');
+    if (headerBuyButton) {
+        headerBuyButton.addEventListener('click', () => {
+            trackUserAction('buy button clicked');
+        });
+    }
+    
+    // Track hero CTA button
+    const heroCtaButton = document.querySelector('.cta-button');
+    if (heroCtaButton) {
+        heroCtaButton.addEventListener('click', () => {
+            trackUserAction('buy button clicked');
+        });
+    }
+    
+    // Track footer Uniswap link
+    const footerUniswapLink = document.querySelector('a[href*="app.uniswap.org"]');
+    if (footerUniswapLink) {
+        footerUniswapLink.addEventListener('click', () => {
+            trackUserAction('buy button clicked');
+        });
+    }
+    
+    // Track any dynamically created buy buttons in games/animations
+    // Use event delegation for dynamically created elements
+    document.addEventListener('click', (e) => {
+        // Check for buy buttons in game overlays
+        if (e.target.textContent.includes('Buy Ribbit') || 
+            e.target.textContent.includes('BUY') ||
+            (e.target.href && e.target.href.includes('app.uniswap.org'))) {
+            trackUserAction('buy button clicked');
+        }
+        
+        // Track frog clicks in game (they show "BUY" text when clicked)
+        if (e.target.classList.contains('game-frog') || 
+            e.target.innerHTML === '🐸') {
+            trackUserAction('buy button clicked');
+        }
+    });
+
+    // ==================== GAME TRACKING ====================
+    
+    // Start game button tracking will be added to the existing handler below
+    
+    // Track game restart buttons (dynamically created)
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('frog-restart-btn') && 
+            !e.target.textContent.includes('Buy')) {
+            trackUserAction('game started');
+        }
+    });
+
+    // ==================== CONTRACT ADDRESS TRACKING ====================
+    
+    // Track contract address copying/selection
+    const contractElements = document.querySelectorAll('p, span, div');
+    contractElements.forEach(element => {
+        if (element.textContent.includes('0xb794ad95317f75c44090f64955954c3849315ffe')) {
+            // Track text selection
+            element.addEventListener('mouseup', () => {
+                const selection = window.getSelection();
+                if (selection.toString().includes('0xb794ad95317f75c44090f64955954c3849315ffe')) {
+                    trackUserAction('contract copied');
+                }
+            });
+            
+            // Track double-click for selection
+            element.addEventListener('dblclick', () => {
+                trackUserAction('contract copied');
+            });
+            
+            // Track copy keyboard shortcut when contract is selected
+            element.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+                    const selection = window.getSelection();
+                    if (selection.toString().includes('0xb794ad95317f75c44090f64955954c3849315ffe')) {
+                        trackUserAction('contract copied');
+                    }
+                }
+            });
+            
+            // Make it easier to select by adding some styling
+            element.style.userSelect = 'text';
+            element.style.cursor = 'text';
+            element.title = 'Click to select contract address';
+            element.tabIndex = 0; // Make it focusable for keyboard events
+        }
+    });
+    
+    // Global copy event listener as backup
+    document.addEventListener('copy', () => {
+        const selection = window.getSelection();
+        if (selection.toString().includes('0xb794ad95317f75c44090f64955954c3849315ffe')) {
+            trackUserAction('contract copied');
+        }
+    });
+
+    // ==================== RIBBIT TAG COPY TRACKING ====================
+    
+    // Track copy code button
+    const copyButton = document.querySelector('.copy-button');
+    if (copyButton) {
+        copyButton.addEventListener('click', () => {
+            trackUserAction('ribbit tag copied');
+        });
+    }
+
+    // ==================== SOCIAL LINKS TRACKING ====================
+    
+    // Track Telegram link
+    const telegramLink = document.querySelector('a[href*="t.me/ribbit_eth"]');
+    if (telegramLink) {
+        telegramLink.addEventListener('click', () => {
+            trackUserAction('telegram link clicked');
+        });
+    }
+    
+    // Track Twitter link
+    const twitterLink = document.querySelector('a[href*="x.com/RibbitCTO"]');
+    if (twitterLink) {
+        twitterLink.addEventListener('click', () => {
+            trackUserAction('twitter link clicked');
+        });
+    }
+
+    // ==================== EXISTING CODE ====================
+    
     // Smooth scrolling for navigation links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -13,10 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Game initialization
+    // Game initialization with analytics tracking
     const startGameButton = document.getElementById('start-game');
     if (startGameButton) {
         startGameButton.addEventListener('click', () => {
+            // Track the game start event
+            trackUserAction('game started');
             // Initialize the game
             if (typeof startGame === 'function') {
                 startGame();
@@ -68,6 +212,138 @@ document.addEventListener('DOMContentLoaded', () => {
         feature.style.transform = 'translateY(20px)';
         feature.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
         observer.observe(feature);
+    });
+
+    // ==================== YOUTUBE VIDEO TRACKING ====================
+    
+    // Track YouTube video play events
+    function trackYouTubeEvents() {
+        // Load YouTube iframe API if it doesn't exist
+        if (!window.YT) {
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+        
+        // YouTube API ready callback
+        window.onYouTubeIframeAPIReady = function() {
+            const iframe = document.querySelector('iframe[src*="youtube.com"]');
+            if (iframe) {
+                const player = new YT.Player(iframe, {
+                    events: {
+                        'onStateChange': function(event) {
+                            if (event.data === YT.PlayerState.PLAYING) {
+                                trackUserAction('youtube video started');
+                            }
+                        }
+                    }
+                });
+            }
+        };
+        
+        // If API is already loaded, initialize immediately
+        if (window.YT && window.YT.Player) {
+            window.onYouTubeIframeAPIReady();
+        }
+    }
+    
+    // Initialize YouTube tracking
+    trackYouTubeEvents();
+
+    // ==================== GTM FROG ANIMATION TRACKING ====================
+    
+    // Watch for dynamically added frog animation elements (from GTM tag)
+    const frogAnimationObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Check for frog overlay from GTM animation
+                    if (node.id === 'frog-overlay' || node.querySelector('#frog-overlay')) {
+                        const overlay = node.id === 'frog-overlay' ? node : node.querySelector('#frog-overlay');
+                        
+                        // Track buy buttons in GTM animation
+                        const buyButtons = overlay.querySelectorAll('button, a');
+                        buyButtons.forEach(button => {
+                            if (button.textContent.toLowerCase().includes('buy ribbit') || 
+                                button.textContent.toLowerCase().includes('buy') ||
+                                button.textContent.includes('BUY') ||
+                                button.textContent.includes('Swap') ||
+                                (button.href && button.href.includes('uniswap'))) {
+                                
+                                button.addEventListener('click', () => {
+                                    trackUserAction('buy button clicked');
+                                });
+                            }
+                            
+                            // Track start game buttons in GTM animation (specifically "🎮 play game")
+                            if (button.textContent.toLowerCase().includes('play game') || 
+                                button.textContent.includes('🎮') ||
+                                button.textContent.includes('Start Game') ||
+                                button.textContent.includes('Begin')) {
+                                
+                                button.addEventListener('click', () => {
+                                    trackUserAction('game started');
+                                });
+                            }
+                        });
+                        
+                        // Also watch for any frogs that get clicked (they trigger buy actions)
+                        const frogClickHandler = (e) => {
+                            if (e.target.innerHTML === '🐸' || 
+                                e.target.classList.contains('frog') ||
+                                e.target.textContent.includes('🐸')) {
+                                trackUserAction('buy button clicked');
+                            }
+                        };
+                        
+                        overlay.addEventListener('click', frogClickHandler);
+                    }
+                    
+                    // Check for frog game overlay specifically
+                    if (node.id && (node.id.includes('frog-game') || node.id.includes('frog-animation'))) {
+                        // Track buy buttons in game overlays
+                        const buyButtons = node.querySelectorAll('button, a');
+                        buyButtons.forEach(button => {
+                            if (button.textContent.includes('Buy') || 
+                                button.textContent.includes('BUY') ||
+                                (button.href && button.href.includes('uniswap'))) {
+                                
+                                button.addEventListener('click', () => {
+                                    trackUserAction('buy button clicked');
+                                });
+                            }
+                        });
+                        
+                        // Track game frogs and restart buttons
+                        const gameHandler = (e) => {
+                            if (e.target.classList.contains('game-frog') || 
+                                e.target.innerHTML === '🐸') {
+                                trackUserAction('buy button clicked');
+                            }
+                            
+                            // Track restart buttons with "Buy Ribbit" text (from game over screen)
+                            if (e.target.classList.contains('frog-restart-btn')) {
+                                if (e.target.textContent.includes('Buy Ribbit') || 
+                                    e.target.onclick && e.target.onclick.toString().includes('uniswap')) {
+                                    trackUserAction('buy button clicked');
+                                } else {
+                                    trackUserAction('game started');
+                                }
+                            }
+                        };
+                        
+                        node.addEventListener('click', gameHandler);
+                    }
+                }
+            });
+        });
+    });
+    
+    // Start observing for GTM animation elements
+    frogAnimationObserver.observe(document.body, {
+        childList: true,
+        subtree: true
     });
 });
 
