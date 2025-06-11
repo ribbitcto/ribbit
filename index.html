@@ -5,7 +5,229 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🐸 RIBBIT - The Frog Meme Token</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Glitch Scroll Function - Available Immediately -->
+    <script>
+        // Define glitchScrollToBuy function immediately so onclick handlers work
+        function glitchScrollToBuy() {
+            console.log('🐸 Initiating glitch scroll to buy section...');
+            
+            // Prevent multiple simultaneous executions
+            if (window.glitchScrollActive) {
+                console.log('🐸 Glitch scroll already active, skipping...');
+                return;
+            }
+            window.glitchScrollActive = true;
+            
+            // Create glitch overlay with inline styles
+            const glitchOverlay = document.createElement('div');
+            glitchOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 9999;
+                opacity: 0;
+                background: linear-gradient(45deg, 
+                    transparent 0%, 
+                    rgba(255, 0, 0, 0.3) 25%, 
+                    transparent 50%, 
+                    rgba(0, 255, 0, 0.3) 75%, 
+                    transparent 100%);
+                animation: glitchSweep 0.4s ease-in-out;
+            `;
+            document.body.appendChild(glitchOverlay);
+            console.log('🐸 Glitch overlay created');
+            
+            // Add body effects
+            document.body.style.filter = 'hue-rotate(45deg) contrast(120%)';
+            console.log('🐸 Body glitch effect activated');
+            
+            // RGB shift text elements
+            const textElements = document.querySelectorAll('h1, h2, h3, h4, p, span, .logo');
+            console.log('🐸 Found', textElements.length, 'text elements for RGB shift');
+            
+            textElements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.textShadow = '-2px 0 0 red, 2px 0 0 green, 0 2px 0 blue';
+                    el.style.transform = 'translate(' + (Math.random() * 4 - 2) + 'px, ' + (Math.random() * 4 - 2) + 'px)';
+                    setTimeout(() => {
+                        el.style.textShadow = '';
+                        el.style.transform = '';
+                    }, 200);
+                }, index * 15);
+            });
+            
+            // Start scroll immediately with glitch effects
+            const buySection = document.getElementById('buy-ribbit');
+            if (!buySection) {
+                console.error('🐸 Buy section not found! ID: buy-ribbit');
+                window.glitchScrollActive = false;
+                return;
+            }
+            
+            console.log('🐸 Buy section found, starting simultaneous glitch + scroll...');
+            
+            const targetPosition = buySection.offsetTop - 80;
+            const startPosition = window.pageYOffset;
+            const distance = targetPosition - startPosition;
+            const duration = 1200; // Slightly longer to see more glitch effects
+            let start = null;
+            
+            function animateScroll(timestamp) {
+                if (!start) start = timestamp;
+                const progress = Math.min((timestamp - start) / duration, 1);
+                
+                // Enhanced glitch stutters during scroll
+                const glitchOffset = Math.random() < 0.2 ? Math.random() * 30 - 15 : 0;
+                const easeProgress = progress < 0.5 
+                    ? 4 * progress * progress * progress
+                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+                
+                // Add more intense glitch effects during scroll
+                const scrollGlitchX = Math.random() < 0.1 ? Math.random() * 6 - 3 : 0;
+                
+                window.scrollTo(scrollGlitchX, startPosition + (distance * easeProgress) + glitchOffset);
+                
+                // Intensify body glitch during scroll
+                if (Math.random() < 0.3) {
+                    document.body.style.filter = `hue-rotate(${Math.random() * 90}deg) contrast(${100 + Math.random() * 40}%) saturate(${100 + Math.random() * 50}%)`;
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateScroll);
+                } else {
+                    console.log('🐸 Scroll animation complete, cleaning up...');
+                    document.body.style.filter = '';
+                    setTimeout(() => {
+                        if (glitchOverlay.parentNode) {
+                            glitchOverlay.parentNode.removeChild(glitchOverlay);
+                        }
+                        window.glitchScrollActive = false;
+                    }, 300);
+                }
+            }
+            
+            // Start scroll immediately (no delay)
+            requestAnimationFrame(animateScroll);
+            
+            // Track analytics
+            if (window.dataLayer) {
+                window.dataLayer.push({
+                    'event': 'user_action',
+                    'event_name': 'glitch scroll to buy'
+                });
+                console.log('🐸 Analytics event tracked');
+            }
+        }
+        
+        // Track chart open function
+        function trackChartOpen() {
+            // Track analytics
+            if (window.dataLayer) {
+                window.dataLayer.push({
+                    'event': 'user_action',
+                    'event_name': 'chart opened'
+                });
+                console.log('🐸 Analytics event tracked');
+            }
+        }
+        
+        // Auto-load Uniswap iframe when Buy section comes into view
+        function loadUniswapWidget() {
+            console.log('🐸 Loading Uniswap widget...');
+            
+            const placeholder = document.getElementById('uniswap-placeholder');
+            const iframe = document.getElementById('uniswap-iframe');
+            
+            if (placeholder && iframe) {
+                // Hide placeholder with smooth transition
+                placeholder.style.opacity = '0';
+                placeholder.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    placeholder.style.display = 'none';
+                    
+                    // Load iframe
+                    iframe.src = iframe.getAttribute('data-src');
+                    iframe.style.display = 'block';
+                    iframe.style.opacity = '0';
+                    
+                    // Fade in iframe
+                    setTimeout(() => {
+                        iframe.style.transition = 'opacity 0.5s ease';
+                        iframe.style.opacity = '1';
+                    }, 100);
+                    
+                }, 300);
+                
+                // Track analytics
+                if (window.dataLayer) {
+                    window.dataLayer.push({
+                        'event': 'user_action',
+                        'event_name': 'uniswap widget auto-loaded'
+                    });
+                }
+                
+                console.log('🐸 Uniswap widget auto-loaded when section came into view');
+            }
+        }
+        
+        // Set up intersection observer to auto-load when Buy section is visible
+        function setupAutoLoad() {
+            const buyTitle = document.querySelector('#buy-ribbit h2');
+            const placeholder = document.getElementById('uniswap-placeholder');
+            
+            if (!buyTitle || !placeholder) {
+                console.log('🐸 Buy section or placeholder not found, retrying...');
+                setTimeout(setupAutoLoad, 500);
+                return;
+            }
+            
+            // Create intersection observer
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && placeholder.style.display !== 'none') {
+                        console.log('🐸 Buy section came into view, auto-loading Uniswap...');
+                        loadUniswapWidget();
+                        observer.disconnect(); // Stop observing after loading
+                    }
+                });
+            }, {
+                threshold: 0.3, // Load when 30% of the title is visible
+                rootMargin: '50px' // Start loading a bit early
+            });
+            
+            observer.observe(buyTitle);
+            console.log('🐸 Auto-load observer setup complete');
+        }
+        
+        // Make globally available
+        window.glitchScrollToBuy = glitchScrollToBuy;
+        window.trackChartOpen = trackChartOpen;
+        window.loadUniswapWidget = loadUniswapWidget;
+        window.setupAutoLoad = setupAutoLoad;
+        console.log('🐸 Inline glitch scroll function loaded!');
+        
+        // Prevent initial auto-scroll and ensure page starts at top
+        document.addEventListener('DOMContentLoaded', function() {
+            // Force scroll to top on load
+            window.scrollTo(0, 0);
+            
+            // Setup auto-loading for Uniswap widget
+            setupAutoLoad();
+            
+            // Enable smooth scrolling after load
+            setTimeout(function() {
+                document.documentElement.classList.add('loaded');
+                document.documentElement.style.scrollBehavior = 'smooth';
+                console.log('🐸 Page loaded, smooth scrolling enabled');
+            }, 100);
+        });
+    </script>
     
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -26,17 +248,21 @@
                 <a href="#about">About</a>
                 <a href="#game">Play Game</a>
                 <a href="#tokenomics">Tokenomics</a>
-                <a href="https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe" class="buy-button" target="_blank">Buy $RIBBIT</a>
+                <a href="https://t.me/ribbit_eth" target="_blank">Telegram</a>
+                <a href="https://x.com/RibbitCTO" target="_blank">Twitter</a>
+                <button class="buy-button" onclick="glitchScrollToBuy()">Buy $RIBBIT</button>
             </div>
         </div>
     </nav>
 
     <header class="hero">
-        <div class="hero-content">
-            <img src="https://dd.dexscreener.com/ds-data/tokens/ethereum/0xb794ad95317f75c44090f64955954c3849315ffe.png?size=lg&key=5c3845" alt="RIBBIT Logo" class="hero-logo">
-            <h1>RIBBIT</h1>
-            <p class="tagline">the toad copy with no original.</p>
-            <a href="https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe" class="cta-button" target="_blank">Buy $RIBBIT</a>
+        <div class="hero-container">
+            <div class="hero-content">
+                <img src="https://dd.dexscreener.com/ds-data/tokens/ethereum/0xb794ad95317f75c44090f64955954c3849315ffe.png?size=lg&key=5c3845" alt="RIBBIT Logo" class="hero-logo">
+                <h1>RIBBIT</h1>
+                <p class="tagline">the toad copy with no original.</p>
+                <button class="cta-button" onclick="glitchScrollToBuy()">Buy $RIBBIT</button>
+            </div>
         </div>
     </header>
 
@@ -133,6 +359,40 @@
         </div>
     </section>
 
+    <section id="buy-ribbit" class="section buy-section">
+        <div class="container">
+            <h2>🐸 Buy $RIBBIT</h2>
+            <p class="buy-description">Ready to join the lily pad? Get your $RIBBIT tokens now!</p>
+            <div class="buy-links">
+                <a href="https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe" class="buy-link" target="_blank">Open in Uniswap</a>
+                <a href="https://dexscreener.com/ethereum/0xb794ad95317f75c44090f64955954c3849315ffe" class="buy-link" target="_blank" onclick="trackChartOpen()">View Chart</a>
+            </div>
+            <div class="widget-container">
+                <!-- Lazy-loaded Uniswap iframe - prevents auto-scroll completely -->
+                <div id="uniswap-placeholder" style="height: 660px; width: 100%; max-width: 500px; background: linear-gradient(135deg, #ff6b6b, #4ecdc4); border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 18px; color: white; transition: all 0.3s ease, opacity 0.3s ease, transform 0.3s ease;">
+                    <div style="font-size: 48px; margin-bottom: 20px; animation: pulse 2s infinite;">🐸</div>
+                    <div style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Loading Uniswap...</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Swap interface will appear shortly</div>
+                </div>
+                <iframe
+                    id="uniswap-iframe"
+                    data-src="https://app.uniswap.org/#/swap?theme=dark&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe"
+                    height="660px"
+                    width="100%"
+                    style="
+                        border: 0;
+                        border-radius: 20px;
+                        max-width: 500px;
+                        min-width: 300px;
+                        display: none;
+                    "
+                    title="Buy RIBBIT on Uniswap"
+                    loading="lazy"
+                ></iframe>
+            </div>
+        </div>
+    </section>
+
     <section id="add-ribbit" class="section">
         <div class="container">
             <h2>Add RIBBIT to your site</h2>
@@ -170,10 +430,10 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h3>🐸 RIBBIT</h3>
-                    <p>The Most Ribbiting Meme Token</p>
+                    <p>Thirty fake frames a second can drown the senses, but only exposes the secret we forgot. Reality was always a shared hallucination. Owning RIBBIT is to discover you were never separate from what you were watching.</p>
                 </div>
                 <div class="footer-section">
-                    <h3>Links</h3>
+                    <h3>Community</h3>
                     <a href="https://t.me/ribbit_eth" target="_blank">Telegram</a>
                     <a href="https://x.com/RibbitCTO" target="_blank">Twitter</a>
                 </div>
