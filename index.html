@@ -449,23 +449,7 @@
             <h2>Add RIBBIT to your site</h2>
             <p class="code-description">Deploy the RIBBIT tag through Google Tag Manager and any visit where URL + #ribbit = simulated lily run</p>
             <div class="code-container">
-                <pre><code id="ribbit-code">// Frog Jump Animation - GTM Ready Version (ES5 Compatible)
-(function() {
-    'use strict';
-    
-    // Check if URL contains "ribbit" parameter or hash
-    function hasRibbitParam() {
-        var queryString = window.location.search.toLowerCase();
-        var hashString = window.location.hash.toLowerCase();
-        
-        // ... complete animation logic ...
-        
-        console.log('🐸 ' + config.numFrogs + ' frogs jumping! Click to swap!');
-    }
-    
-    // 🐸 Complete 274-line GTM-ready code with URL detection, 
-    // ES5 compatibility, event tracking, and auto-cleanup
-})();</code></pre>
+                <pre><code id="ribbit-code">&lt;script src="https://cdn.jsdelivr.net/gh/ribbitcto/ribbit@main/ribbit-tag.js"&gt;&lt;/script&gt;</code></pre>
                 <button class="copy-button" onclick="copyCode()">Copy GTM Code</button>
             </div>
         </div>
