@@ -500,7 +500,7 @@ function copyCode() {
         const button = document.querySelector('.copy-button');
         if (button) {
             const originalText = button.innerHTML;
-            button.innerHTML = '⚡ CODE COPIED ⚡';
+            button.innerHTML = 'Copied';
             button.style.background = 'linear-gradient(135deg, #00ff41, #00ff41)';
             button.style.color = '#000';
             button.style.boxShadow = '0 0 20px rgba(0, 255, 65, 0.8)';
@@ -508,7 +508,8 @@ function copyCode() {
                 button.innerHTML = originalText;
                 button.style.background = 'linear-gradient(135deg, #00ff41, #7c3aed)';
                 button.style.boxShadow = '0 4px 15px rgba(0, 255, 65, 0.3)';
-            }, 2500);
+                button.style.color = '';
+            }, 1000);
         }
     }).catch(err => {
         console.error('Failed to copy: ', err);
