@@ -542,7 +542,7 @@ function copyCode() {
         'color: #2E8B57;' +
         'box-shadow: 0 4px 15px rgba(0,0,0,0.3);' +
         'backdrop-filter: blur(10px);' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-lily-counter {' +
         'background: rgba(220, 20, 60, 0.9);' +
@@ -552,7 +552,7 @@ function copyCode() {
         'font-weight: bold;' +
         'color: white;' +
         'box-shadow: 0 4px 15px rgba(0,0,0,0.3);' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-lily-pad {' +
         'position: fixed;' +
@@ -740,7 +740,19 @@ function copyCode() {
         }
 
         gameOverlay.style.display = 'block';
-        document.getElementById('frog-animation-lily-counter').style.display = 'block';
+        
+        // Ensure UI elements exist and are visible
+        var lilyCounterElement = document.getElementById('frog-animation-lily-counter');
+        var scoreElement = document.getElementById('frog-animation-score-display');
+        
+        console.log('🐸 Game starting - UI elements check:');
+        console.log('🐸 Score element found:', !!scoreElement);
+        console.log('🐸 Lily counter element found:', !!lilyCounterElement);
+        
+        if (lilyCounterElement) {
+            lilyCounterElement.style.display = 'block';
+            console.log('🐸 Lily counter shown');
+        }
         
         updateUI();
         
@@ -957,8 +969,16 @@ function copyCode() {
 
     // Update UI displays
     function updateUI() {
-        document.getElementById('frog-animation-score-display').textContent = 'RIBBITS: ' + gameState.score;
-        document.getElementById('frog-animation-lily-counter').textContent = 'FROGS ON LILY: ' + gameState.frogsOnLily + '/10';
+        var scoreElement = document.getElementById('frog-animation-score-display');
+        var lilyElement = document.getElementById('frog-animation-lily-counter');
+        
+        if (scoreElement) {
+            scoreElement.textContent = 'RIBBITS: ' + gameState.score;
+        }
+        
+        if (lilyElement) {
+            lilyElement.textContent = 'FROGS ON LILY: ' + gameState.frogsOnLily + '/10';
+        }
     }
 
     // End game
