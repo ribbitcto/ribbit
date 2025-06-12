@@ -20,6 +20,7 @@
             'client_id': '555',
             'allow_ad_personalization_signals': false
         });
+        console.log('🐸 Sending ribbit_tag_triggered event!'); // <-- Add this
         gtag('event', 'ribbit_tag_triggered');
     }
 
