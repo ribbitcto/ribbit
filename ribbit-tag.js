@@ -3,31 +3,6 @@
 (function() {
     'use strict';
 
-    // --- GA4 Privacy-Focused Tracking using gtag.js (safe for pages with existing GA) ---
-    function initRibbitGA() {
-        // Wait until gtag is defined by the host page
-        if (typeof window.gtag !== 'function') {
-            console.log('🐸 gtag.js not yet loaded – waiting …');
-            setTimeout(initRibbitGA, 50);
-            return;
-        }
-
-        // 1) Register ONLY our Measurement ID – no extra page view
-        window.gtag('config', 'G-4H4DRYJSM0', {
-            send_page_view: false,
-            anonymize_ip: true,
-            allow_ad_personalization_signals: false
-        });
-        console.log('🐸 gtag config for G-4H4DRYJSM0 sent!');
-
-        // 2) Send the custom event exclusively to our property
-        window.gtag('event', 'ribbit_tag_triggered', {
-            send_to: 'G-4H4DRYJSM0'
-        });
-
-        console.log('🐸 ribbit_tag_triggered event sent via gtag.js (send_to)!');
-    }
-
     // Check if animation should run based on URL parameters
     function hasRibbitParam() {
         var urlParams = new URLSearchParams(window.location.search);
@@ -61,9 +36,6 @@
     }
     
     console.log('🐸 Ribbit parameter detected! Starting frog animation...');
-
-    // Fire the privacy-focused event via gtag.js (safe isolation)
-    initRibbitGA();
 
     // Check if animation is already running
     if (document.getElementById('frog-overlay')) {
@@ -686,13 +658,6 @@
         if (overlay.parentNode) {
             overlay.parentNode.removeChild(overlay);
         }
-        // GTM Event for tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'frog_animation_closed', {
-                'event_category': 'engagement',
-                'event_label': 'close_button'
-            });
-        }
     };
 
     // Add buy ribbit button (removed the X since we have dedicated close button)
@@ -711,17 +676,6 @@
         'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;';
     
     buyBtn.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // GTM Event for tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'frog_animation_buy_clicked', {
-                'event_category': 'conversion',
-                'event_label': 'buy_ribbit'
-            });
-        }
-        
         // Trigger glitch effect
         triggerGlitchEffect();
         
@@ -762,33 +716,11 @@
         'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;';
     
     playBtn.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // GTM Event for tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'frog_game_started', {
-                'event_category': 'engagement',
-                'event_label': 'play_game'
-            });
-        }
-        
         // Start the game
         startGame();
     };
     
     lickBtn.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // GTM Event for tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'frog_toad_licked', {
-                'event_category': 'engagement',
-                'event_label': 'lick_toad'
-            });
-        }
-        
         // Trigger glitch effect
         triggerGlitchEffect();
         
@@ -916,15 +848,6 @@
         }
     }
 
-    // GTM Event for tracking
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'frog_animation_started', {
-            'event_category': 'engagement',
-            'event_label': 'animation_loaded',
-            'value': config.numFrogs
-        });
-    }
-
     console.log('🐸 ' + config.numFrogs + ' frogs are now jumping across your screen! Click the buttons!');
     
     // Glitch effect function
@@ -976,8 +899,6 @@
             document.body.style.animation = '';
         }, 1100);
     }
-    
-    // Removed complex Twitter feed function - now just redirects to Twitter page
     
     // Auto-cleanup after 60 seconds to prevent memory leaks
     setTimeout(function() {
