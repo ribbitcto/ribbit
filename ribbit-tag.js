@@ -3,42 +3,17 @@
 (function() {
     'use strict';
 
-    // --- GA4 Privacy-Focused Tracking via Measurement Protocol ---
-    function sendRibbitEventMeasurementProtocol() {
-        // GA4 Measurement Protocol endpoint
-        var endpoint = 'https://www.google-analytics.com/mp/collect?measurement_id=G-4H4DRYJSM0&api_secret=ua6Fz5NlQR-1n2lhda0HPg';
-        // NOTE: You must set up an API secret in your GA4 property and replace RIBBIT_SECRET_PLACEHOLDER
-
-        // Build the event payload
-        var payload = {
-            client_id: '555', // Privacy: constant client_id
-            events: [
-                {
-                    name: 'ribbit_tag_triggered',
-                    params: {}
-                }
-            ]
-        };
-
-        // Send the event via POST
-        try {
-            fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            }).then(function(response) {
-                if (!response.ok) {
-                    console.log('🐸 GA4 Measurement Protocol event failed:', response.status, response.statusText);
-                } else {
-                    console.log('🐸 ribbit_tag_triggered event sent via Measurement Protocol!');
-                }
-            }).catch(function(err) {
-                console.log('🐸 GA4 Measurement Protocol fetch error:', err);
+    // --- GA4 Privacy-Focused Tracking using gtag.js with send_to ---
+    function sendRibbitEventGtag() {
+        // Only send if gtag is available
+        if (typeof window.gtag === 'function') {
+            // Send event only to our property, do not interfere with others
+            window.gtag('event', 'ribbit_tag_triggered', {
+                'send_to': 'G-4H4DRYJSM0'
             });
-        } catch (e) {
-            console.log('🐸 GA4 Measurement Protocol error:', e);
+            console.log('🐸 ribbit_tag_triggered event sent via gtag.js with send_to!');
+        } else {
+            console.log('🐸 gtag.js not found, ribbit_tag_triggered event not sent.');
         }
     }
 
@@ -76,8 +51,8 @@
     
     console.log('🐸 Ribbit parameter detected! Starting frog animation...');
 
-    // Fire the privacy-focused event via Measurement Protocol
-    sendRibbitEventMeasurementProtocol();
+    // Fire the privacy-focused event via gtag.js
+    sendRibbitEventGtag();
 
     // Check if animation is already running
     if (document.getElementById('frog-overlay')) {
