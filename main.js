@@ -517,7 +517,7 @@ function copyCode() {
         'z-index: 9999;' +
         'pointer-events: auto;' +
         'overflow: hidden;' +
-        'font-family: "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         'display: none;';
 
     // Add game styles
@@ -531,6 +531,7 @@ function copyCode() {
         'flex-direction: column;' +
         'gap: 10px;' +
         'align-items: flex-end;' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-score {' +
         'background: rgba(255, 255, 255, 0.95);' +
@@ -541,6 +542,7 @@ function copyCode() {
         'color: #2E8B57;' +
         'box-shadow: 0 4px 15px rgba(0,0,0,0.3);' +
         'backdrop-filter: blur(10px);' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-lily-counter {' +
         'background: rgba(220, 20, 60, 0.9);' +
@@ -550,6 +552,7 @@ function copyCode() {
         'font-weight: bold;' +
         'color: white;' +
         'box-shadow: 0 4px 15px rgba(0,0,0,0.3);' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-lily-pad {' +
         'position: fixed;' +
@@ -602,6 +605,7 @@ function copyCode() {
         'animation: frog-buy-pop 1.2s ease-out forwards;' +
         'pointer-events: none;' +
         'z-index: 10003;' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '@keyframes frog-buy-pop {' +
         '0% { transform: scale(0) rotate(0deg); opacity: 1; }' +
@@ -622,6 +626,7 @@ function copyCode() {
         'font-weight: bold;' +
         'z-index: 10005;' +
         'transition: all 0.3s ease;' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-close-btn:hover {' +
         'background: #ff4444;' +
@@ -640,15 +645,18 @@ function copyCode() {
         'text-align: center;' +
         'z-index: 10006;' +
         'box-shadow: 0 0 50px rgba(0,0,0,0.8);' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-game-over h1 {' +
         'font-size: 36px;' +
         'color: #FF6B6B;' +
         'margin-bottom: 20px;' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-game-over p {' +
         'font-size: 20px;' +
         'margin-bottom: 20px;' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-restart-btn {' +
         'padding: 15px 30px;' +
@@ -660,6 +668,7 @@ function copyCode() {
         'cursor: pointer;' +
         'margin: 10px;' +
         'transition: all 0.3s ease;' +
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
         '}' +
         '.frog-restart-btn:hover {' +
         'background: #45a049;' +
@@ -980,7 +989,7 @@ function copyCode() {
         gameOverScreen.innerHTML = '<h1>🐸 GAME OVER! 🐸</h1>' +
             '<p>The lily pad is overrun with frogs!</p>' +
             '<p>Final Score: <strong>' + gameState.score + ' RIBBITS</strong></p>' +
-            '<button class="frog-restart-btn" onclick="window.open(\'https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe\', \'_blank\')">Buy Ribbit</button>' +
+            '<button class="frog-restart-btn" onclick="window.open(\\'https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe\\', \\'_blank\\')">Buy Ribbit</button>' +
             '<button class="frog-restart-btn" onclick="this.parentNode.parentNode.remove()">Close Game</button>';
         
         gameOverlay.appendChild(gameOverScreen);
@@ -1075,7 +1084,7 @@ function copyCode() {
         'display: flex;' +
         'align-items: center;' +
         'gap: 8px;' +
-        'font-family: Arial, sans-serif;';
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;';
     
     buyBtn.onclick = function(e) {
         e.preventDefault();
@@ -1115,7 +1124,7 @@ function copyCode() {
         'border-radius: 5px;' +
         'cursor: pointer;' +
         'font-size: 14px;' +
-        'font-family: Arial, sans-serif;';
+        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;';
     
     playBtn.onclick = function(e) {
         e.preventDefault();
@@ -1273,16 +1282,25 @@ function copyCode() {
 
     // Copy to clipboard
     navigator.clipboard.writeText(fullCode).then(() => {
-        // Show success message
-        const button = document.querySelector('.cta-button');
-        const originalText = button.textContent;
-        button.textContent = '✅ Copied!';
-        button.style.background = '#28a745';
-        
-        setTimeout(() => {
-            button.textContent = originalText;
-            button.style.background = '#FF6B6B';
-        }, 2000);
+        // Show matrix-themed success message
+        const button = document.querySelector('button[onclick="copyRibbitCode()"]');
+        if (button) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '⚡ CODE DEPLOYED ⚡';
+            button.style.background = 'linear-gradient(135deg, #00ff41, #00ff41)';
+            button.style.color = '#000';
+            button.style.boxShadow = '0 0 20px rgba(0, 255, 65, 0.8)';
+            
+            // Matrix-style console message
+            console.log('%c🐸 RIBBIT GTM CODE EXTRACTED 🐸', 'color: #00ff41; font-size: 16px; font-weight: bold; background: #0d1117; padding: 5px;');
+            console.log('%cDeploy this code in GTM. Any URL with #ribbit will trigger frog chaos!', 'color: #00ff41; background: #0d1117;');
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = 'linear-gradient(135deg, #00ff41, #7c3aed)';
+                button.style.boxShadow = '0 4px 15px rgba(0, 255, 65, 0.3)';
+            }, 2500);
+        }
     }).catch(err => {
         console.error('Failed to copy: ', err);
         // Fallback: show text in a dialog for manual copying
@@ -1293,6 +1311,6 @@ function copyCode() {
         document.execCommand('copy');
         document.body.removeChild(textArea);
         
-        alert('Code copied to clipboard!');
+        alert('🐸 RIBBIT code uploaded to clipboard!');
     });
 } 
