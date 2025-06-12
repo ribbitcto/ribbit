@@ -864,7 +864,7 @@
             'background: rgba(0, 0, 0, 0.8);' +
             'z-index: 15000;' +
             'pointer-events: none;' +
-            'animation: glitch-flash 1s ease-out forwards;';
+            'animation: glitch-flash 0.55s ease-out forwards;';
         
         // Add glitch styles
         var glitchStyles = document.createElement('style');
@@ -885,11 +885,51 @@
         document.head.appendChild(glitchStyles);
         document.body.appendChild(glitchOverlay);
         
-        // Make body glitch too
-        document.body.style.animation = 'glitch-flash 1s ease-out forwards';
+        // Add continuous RGB glitch, section movement, and body filter effects
+        var glitchInterval = setInterval(function() {
+            // RGB text shadow
+            var textElements = document.querySelectorAll('h1, h2, h3, h4, p, span, .logo, .nav-links a');
+            textElements.forEach(function(el) {
+                if (Math.random() < 0.5) {
+                    var redOffset = Math.random() * 6 - 3;
+                    var greenOffset = Math.random() * 6 - 3;
+                    var blueOffset = Math.random() * 6 - 3;
+                    el.style.textShadow = redOffset + 'px 0 0 red, ' + greenOffset + 'px 0 0 green, ' + blueOffset + 'px 0 0 blue';
+                    setTimeout(function() {
+                        el.style.textShadow = '';
+                    }, 80);
+                }
+            });
+            // Section movement
+            var sections = document.querySelectorAll('section, nav, header');
+            sections.forEach(function(section, index) {
+                if (Math.random() < 0.6) {
+                    var direction = index % 2 === 0 ? 1 : -1;
+                    var moveX = Math.random() * 10 * direction;
+                    var moveY = Math.random() * 5 - 2.5;
+                    var rotate = Math.random() * 3 - 1.5;
+                    section.style.transform = 'translate(' + moveX + 'px, ' + moveY + 'px) rotate(' + rotate + 'deg)';
+                    setTimeout(function() {
+                        section.style.transform = '';
+                    }, 120);
+                }
+            });
+            // Body filter
+            document.body.style.filter = 'hue-rotate(' + (Math.random() * 360) + 'deg) contrast(' + (80 + Math.random() * 60) + '%) saturate(' + (60 + Math.random() * 120) + '%) brightness(' + (85 + Math.random() * 30) + '%)';
+        }, 70);
         
-        // Clean up after effect
+        // Make body glitch too
+        document.body.style.animation = 'glitch-flash 0.55s ease-out forwards';
+        
+        // Clean up after effect (1s max)
         setTimeout(function() {
+            clearInterval(glitchInterval);
+            document.body.style.filter = '';
+            var allElements = document.querySelectorAll('*');
+            allElements.forEach(function(el) {
+                el.style.transform = '';
+                el.style.textShadow = '';
+            });
             if (glitchOverlay.parentNode) {
                 glitchOverlay.parentNode.removeChild(glitchOverlay);
             }
@@ -897,7 +937,7 @@
                 glitchStyles.parentNode.removeChild(glitchStyles);
             }
             document.body.style.animation = '';
-        }, 1100);
+        }, 1000);
     }
     
     // Auto-cleanup after 60 seconds to prevent memory leaks
