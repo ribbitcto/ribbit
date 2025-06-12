@@ -1081,70 +1081,116 @@ function copyCode() {
         'pointer-events: none;' +
         'overflow: hidden;';
 
-    // Create button container
+    // Create button container (moved to bottom right)
     var buttonContainer = document.createElement('div');
     buttonContainer.style.cssText = 'position: fixed;' +
-        'top: 20px;' +
+        'bottom: 20px;' +
         'right: 20px;' +
         'z-index: 10001;' +
         'display: flex;' +
+        'flex-direction: column;' +
         'gap: 10px;' +
         'pointer-events: auto;';
 
-    // Add buy ribbit button
-    var buyBtn = document.createElement('button');
-    buyBtn.innerHTML = 'buy ribbit <span style="margin-left: 8px; font-size: 12px;">✕</span>';
-    buyBtn.style.cssText = 'padding: 10px 15px;' +
-        'background: #4CAF50;' +
-        'color: white;' +
-        'border: none;' +
-        'border-radius: 5px;' +
+    // Add close button (grey circle with red X)
+    var closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '✕';
+    closeBtn.style.cssText = 'width: 40px;' +
+        'height: 40px;' +
+        'border-radius: 50%;' +
+        'background: rgba(128, 128, 128, 0.9);' +
+        'color: #ff4444;' +
+        'border: 2px solid #666;' +
         'cursor: pointer;' +
-        'font-size: 14px;' +
+        'font-size: 18px;' +
+        'font-weight: bold;' +
         'display: flex;' +
         'align-items: center;' +
-        'gap: 8px;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;';
+        'justify-content: center;' +
+        'transition: all 0.3s ease;' +
+        'align-self: flex-end;';
+    
+    closeBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (overlay.parentNode) {
+            overlay.parentNode.removeChild(overlay);
+        }
+        // GTM Event for tracking
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'frog_animation_closed', {
+                'event_category': 'engagement',
+                'event_label': 'close_button'
+            });
+        }
+    };
+
+    // Add buy ribbit button (removed the X since we have dedicated close button)
+    var buyBtn = document.createElement('button');
+    buyBtn.innerHTML = '💰 buy ribbit';
+    buyBtn.style.cssText = 'padding: 12px 18px;' +
+        'background: linear-gradient(135deg, #4CAF50, #45a049);' +
+        'color: white;' +
+        'border: none;' +
+        'border-radius: 25px;' +
+        'cursor: pointer;' +
+        'font-size: 14px;' +
+        'font-weight: bold;' +
+        'box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);' +
+        'transition: all 0.3s ease;' +
+        'font-family: "Comic Sans MS", cursive, sans-serif;';
     
     buyBtn.onclick = function(e) {
         e.preventDefault();
         e.stopPropagation();
         
-        // Check if the click was on the X (span element)
-        if (e.target.tagName === 'SPAN') {
-            if (overlay.parentNode) {
-                overlay.parentNode.removeChild(overlay);
-            }
-            // GTM Event for tracking
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'frog_animation_closed', {
-                    'event_category': 'engagement',
-                    'event_label': 'close_button'
-                });
-            }
-        } else {
-            // GTM Event for tracking
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'frog_animation_buy_clicked', {
-                    'event_category': 'conversion',
-                    'event_label': 'buy_ribbit'
-                });
-            }
-            window.open(config.uniswapUrl, '_blank');
+        // GTM Event for tracking
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'frog_animation_buy_clicked', {
+                'event_category': 'conversion',
+                'event_label': 'buy_ribbit'
+            });
         }
+        
+        // Trigger glitch effect
+        triggerGlitchEffect();
+        
+        // Open Uniswap after glitch
+        setTimeout(function() {
+            window.open(config.uniswapUrl, '_blank');
+        }, 1000);
     };
 
     // Add play game button
     var playBtn = document.createElement('button');
     playBtn.innerHTML = '🎮 play game';
-    playBtn.style.cssText = 'padding: 10px 15px;' +
-        'background: #FF6B6B;' +
+    playBtn.style.cssText = 'padding: 12px 18px;' +
+        'background: linear-gradient(135deg, #FF6B6B, #ff5252);' +
         'color: white;' +
         'border: none;' +
-        'border-radius: 5px;' +
+        'border-radius: 25px;' +
         'cursor: pointer;' +
         'font-size: 14px;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;';
+        'font-weight: bold;' +
+        'box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);' +
+        'transition: all 0.3s ease;' +
+        'font-family: "Comic Sans MS", cursive, sans-serif;';
+    
+    // Add lick the toad button
+    var lickBtn = document.createElement('button');
+    lickBtn.innerHTML = '👅 lick the toad';
+    lickBtn.style.cssText = 'padding: 12px 18px;' +
+        'background: linear-gradient(135deg, #9C27B0, #7B1FA2);' +
+        'color: white;' +
+        'border: none;' +
+        'border-radius: 25px;' +
+        'cursor: pointer;' +
+        'font-size: 14px;' +
+        'font-weight: bold;' +
+        'box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);' +
+        'transition: all 0.3s ease;' +
+        'font-family: "Comic Sans MS", cursive, sans-serif;';
     
     playBtn.onclick = function(e) {
         e.preventDefault();
@@ -1161,9 +1207,32 @@ function copyCode() {
         // Start the game
         startGame();
     };
+    
+    lickBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // GTM Event for tracking
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'frog_toad_licked', {
+                'event_category': 'engagement',
+                'event_label': 'lick_toad'
+            });
+        }
+        
+        // Trigger glitch effect
+        triggerGlitchEffect();
+        
+        // Show YouTube feed after glitch
+        setTimeout(function() {
+            showYouTubeFeed();
+        }, 1000);
+    };
 
+    buttonContainer.appendChild(closeBtn);
     buttonContainer.appendChild(buyBtn);
     buttonContainer.appendChild(playBtn);
+    buttonContainer.appendChild(lickBtn);
 
     // Create frog element
     function createFrog() {
@@ -1288,6 +1357,220 @@ function copyCode() {
     }
 
     console.log('🐸 ' + config.numFrogs + ' frogs are now jumping across your screen! Click the buttons!');
+    
+    // Glitch effect function
+    function triggerGlitchEffect() {
+        console.log('🌀 Triggering glitch effect...');
+        
+        // Create glitch overlay
+        var glitchOverlay = document.createElement('div');
+        glitchOverlay.style.cssText = 'position: fixed;' +
+            'top: 0;' +
+            'left: 0;' +
+            'width: 100vw;' +
+            'height: 100vh;' +
+            'background: rgba(0, 0, 0, 0.8);' +
+            'z-index: 15000;' +
+            'pointer-events: none;' +
+            'animation: glitch-flash 1s ease-out forwards;';
+        
+        // Add glitch styles
+        var glitchStyles = document.createElement('style');
+        glitchStyles.textContent = '@keyframes glitch-flash {' +
+            '0% { opacity: 0; filter: hue-rotate(0deg) saturate(1); }' +
+            '10% { opacity: 1; filter: hue-rotate(90deg) saturate(2); background: rgba(255, 0, 255, 0.3); }' +
+            '20% { opacity: 0.8; filter: hue-rotate(180deg) saturate(0.5); background: rgba(0, 255, 255, 0.3); }' +
+            '30% { opacity: 1; filter: hue-rotate(270deg) saturate(3); background: rgba(255, 255, 0, 0.3); }' +
+            '40% { opacity: 0.6; filter: hue-rotate(360deg) saturate(1); background: rgba(255, 0, 0, 0.3); }' +
+            '50% { opacity: 1; filter: hue-rotate(45deg) saturate(2); background: rgba(0, 255, 0, 0.3); }' +
+            '60% { opacity: 0.8; filter: hue-rotate(135deg) saturate(0.8); background: rgba(0, 0, 255, 0.3); }' +
+            '70% { opacity: 1; filter: hue-rotate(225deg) saturate(1.5); background: rgba(255, 128, 0, 0.3); }' +
+            '80% { opacity: 0.7; filter: hue-rotate(315deg) saturate(2.5); background: rgba(128, 0, 255, 0.3); }' +
+            '90% { opacity: 1; filter: hue-rotate(0deg) saturate(1); background: rgba(0, 128, 255, 0.3); }' +
+            '100% { opacity: 0; filter: hue-rotate(0deg) saturate(1); background: transparent; }' +
+            '}';
+        
+        document.head.appendChild(glitchStyles);
+        document.body.appendChild(glitchOverlay);
+        
+        // Make body glitch too
+        document.body.style.animation = 'glitch-flash 1s ease-out forwards';
+        
+        // Clean up after effect
+        setTimeout(function() {
+            if (glitchOverlay.parentNode) {
+                glitchOverlay.parentNode.removeChild(glitchOverlay);
+            }
+            if (glitchStyles.parentNode) {
+                glitchStyles.parentNode.removeChild(glitchStyles);
+            }
+            document.body.style.animation = '';
+        }, 1100);
+    }
+    
+    // YouTube feed function
+    function showYouTubeFeed() {
+        console.log('📺 Creating YouTube feed...');
+        
+        // Create feed overlay
+        var feedOverlay = document.createElement('div');
+        feedOverlay.id = 'youtube-feed-overlay';
+        feedOverlay.style.cssText = 'position: fixed;' +
+            'top: 0;' +
+            'left: 0;' +
+            'width: 100vw;' +
+            'height: 100vh;' +
+            'background: rgba(0, 0, 0, 0.95);' +
+            'z-index: 12000;' +
+            'overflow-y: auto;' +
+            'padding: 20px;' +
+            'box-sizing: border-box;';
+        
+        // Create feed container
+        var feedContainer = document.createElement('div');
+        feedContainer.style.cssText = 'max-width: 400px;' +
+            'margin: 0 auto;' +
+            'background: #1a1a1a;' +
+            'border-radius: 15px;' +
+            'padding: 20px;' +
+            'font-family: "Comic Sans MS", cursive, sans-serif;' +
+            'border: 2px solid #333;' +
+            'box-shadow: 0 0 30px rgba(156, 39, 176, 0.5);';
+        
+        // Feed header
+        var feedHeader = document.createElement('div');
+        feedHeader.innerHTML = '<h2 style="color: #9C27B0; text-align: center; margin: 0 0 20px 0; font-size: 24px;">🐸 TOAD VISION 👅</h2>';
+        feedContainer.appendChild(feedHeader);
+        
+        // Close button for feed
+        var feedCloseBtn = document.createElement('button');
+        feedCloseBtn.innerHTML = '✕ Close Feed';
+        feedCloseBtn.style.cssText = 'position: absolute;' +
+            'top: 20px;' +
+            'right: 20px;' +
+            'padding: 10px 15px;' +
+            'background: #ff4444;' +
+            'color: white;' +
+            'border: none;' +
+            'border-radius: 20px;' +
+            'cursor: pointer;' +
+            'font-size: 14px;' +
+            'font-weight: bold;';
+        
+        feedCloseBtn.onclick = function() {
+            if (feedOverlay.parentNode) {
+                feedOverlay.parentNode.removeChild(feedOverlay);
+            }
+        };
+        
+        // YouTube videos data
+        var videos = [
+            {
+                id: 'XQPgbWPVjc',
+                url: 'https://youtu.be/XQPgbWPVjc',
+                title: '🎵 Toad Tune #1'
+            },
+            {
+                id: 'O5DyT6VeRAc', 
+                url: 'https://youtu.be/O5DyT6VeRAc',
+                title: '🎵 Toad Tune #2'
+            }
+        ];
+        
+        // Create video posts
+        videos.forEach(function(video, index) {
+            var post = document.createElement('div');
+            post.style.cssText = 'margin-bottom: 30px;' +
+                'background: #2a2a2a;' +
+                'border-radius: 10px;' +
+                'padding: 15px;' +
+                'border: 1px solid #444;' +
+                'filter: pixelated;' +
+                'image-rendering: pixelated;';
+            
+                         // Post header
+             var postHeader = document.createElement('div');
+             postHeader.innerHTML = '<div style="color: #ccc; font-size: 12px; margin-bottom: 15px;">🐸 Follow us <a href="https://x.com/RibbitCTO" target="_blank" style="color: #9C27B0; text-decoration: none; font-weight: bold;">@RibbitCTO</a></div>';
+             post.appendChild(postHeader);
+            
+                         // YouTube iframe with better parameters
+             var iframe = document.createElement('iframe');
+             iframe.src = 'https://www.youtube.com/embed/' + video.id + '?autoplay=0&controls=1&modestbranding=1&rel=0&enablejsapi=1&origin=' + window.location.origin;
+             iframe.style.cssText = 'width: 100%;' +
+                 'height: 200px;' +
+                 'border: none;' +
+                 'border-radius: 8px;' +
+                 'filter: contrast(1.2) saturate(1.3);' +
+                 'image-rendering: pixelated;';
+             iframe.allowFullscreen = true;
+             iframe.setAttribute('frameborder', '0');
+             iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+             
+             // Add error handling and load timeout
+             var hasLoaded = false;
+             
+             iframe.onload = function() {
+                 hasLoaded = true;
+                 console.log('✅ YouTube embed loaded successfully: ' + video.id);
+             };
+             
+             iframe.onerror = function() {
+                 console.log('🚫 YouTube embed failed for video: ' + video.id);
+                 createFallbackLink();
+             };
+             
+             // Timeout fallback for embedding restrictions
+             setTimeout(function() {
+                 if (!hasLoaded) {
+                     console.log('⏰ YouTube embed timeout for video: ' + video.id);
+                     createFallbackLink();
+                 }
+             }, 5000);
+             
+             function createFallbackLink() {
+                 if (iframe.parentNode) {
+                     var fallbackLink = document.createElement('a');
+                     fallbackLink.href = 'https://www.youtube.com/watch?v=' + video.id;
+                     fallbackLink.target = '_blank';
+                     fallbackLink.innerHTML = '🎥 Watch on YouTube<br><small style="font-size: 10px;">(Embed Restricted)</small>';
+                     fallbackLink.style.cssText = 'display: block; text-align: center; padding: 60px 20px; background: #333; color: #9C27B0; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s ease;';
+                     
+                     fallbackLink.onmouseover = function() {
+                         this.style.background = '#444';
+                         this.style.transform = 'scale(1.02)';
+                     };
+                     
+                     fallbackLink.onmouseout = function() {
+                         this.style.background = '#333';
+                         this.style.transform = 'scale(1)';
+                     };
+                     
+                     iframe.parentNode.replaceChild(fallbackLink, iframe);
+                 }
+             }
+            
+            post.appendChild(iframe);
+            
+                         // Post footer
+             var postFooter = document.createElement('div');
+             postFooter.innerHTML = '<div style="color: #666; font-size: 12px; margin-top: 10px; text-align: center; font-style: italic;">...fake frames feel real because real was fake first.</div>';
+             post.appendChild(postFooter);
+            
+            feedContainer.appendChild(post);
+        });
+        
+        feedOverlay.appendChild(feedCloseBtn);
+        feedOverlay.appendChild(feedContainer);
+        document.body.appendChild(feedOverlay);
+        
+        // GTM Event for tracking
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'youtube_feed_opened', {
+                'event_category': 'engagement',
+                'event_label': 'toad_vision_feed'
+            });
+        }
+    }
     
     // Auto-cleanup after 60 seconds to prevent memory leaks
     setTimeout(function() {
