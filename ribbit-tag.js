@@ -3,18 +3,28 @@
 (function() {
     'use strict';
 
-    // --- GA4 Privacy-Focused Tracking using gtag.js with send_to ---
-    function sendRibbitEventGtag() {
-        // Only send if gtag is available
-        if (typeof window.gtag === 'function') {
-            // Send event only to our property, do not interfere with others
-            window.gtag('event', 'ribbit_tag_triggered', {
-                'send_to': 'G-4H4DRYJSM0'
-            });
-            console.log('🐸 ribbit_tag_triggered event sent via gtag.js with send_to!');
-        } else {
-            console.log('🐸 gtag.js not found, ribbit_tag_triggered event not sent.');
+    // --- GA4 Privacy-Focused Tracking using gtag.js (safe for pages with existing GA) ---
+    function initRibbitGA() {
+        // Wait until gtag is defined by the host page
+        if (typeof window.gtag !== 'function') {
+            console.log('🐸 gtag.js not yet loaded – waiting …');
+            setTimeout(initRibbitGA, 50);
+            return;
         }
+
+        // 1) Register ONLY our Measurement ID – no extra page view
+        window.gtag('config', 'G-4H4DRYJSM0', {
+            send_page_view: false,
+            anonymize_ip: true,
+            allow_ad_personalization_signals: false
+        });
+
+        // 2) Send the custom event exclusively to our property
+        window.gtag('event', 'ribbit_tag_triggered', {
+            send_to: 'G-4H4DRYJSM0'
+        });
+
+        console.log('🐸 ribbit_tag_triggered event sent via gtag.js (send_to)!');
     }
 
     // Check if animation should run based on URL parameters
@@ -51,8 +61,8 @@
     
     console.log('🐸 Ribbit parameter detected! Starting frog animation...');
 
-    // Fire the privacy-focused event via gtag.js
-    sendRibbitEventGtag();
+    // Fire the privacy-focused event via gtag.js (safe isolation)
+    initRibbitGA();
 
     // Check if animation is already running
     if (document.getElementById('frog-overlay')) {
