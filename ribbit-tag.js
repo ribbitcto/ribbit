@@ -2,7 +2,38 @@
 // Check for ribbit parameter before running
 (function() {
     'use strict';
-    
+
+    // --- GA4 Privacy-Focused Tracking ---
+    if (!window.gtag) {
+        var gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-4H4DRYJSM0';
+        document.head.appendChild(gaScript);
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(){ dataLayer.push(arguments); };
+    }
+
+    function sendRibbitEvent() {
+        gtag('config', 'G-4H4DRYJSM0', {
+            'anonymize_ip': true,
+            'client_id': '555',
+            'allow_ad_personalization_signals': false
+        });
+        gtag('event', 'ribbit_tag_triggered');
+    }
+
+    if (window.gtag) {
+        sendRibbitEvent();
+    } else {
+        var checkGtag = setInterval(function() {
+            if (window.gtag) {
+                clearInterval(checkGtag);
+                sendRibbitEvent();
+            }
+        }, 50);
+    }
+
     // Check if animation should run based on URL parameters
     function hasRibbitParam() {
         var urlParams = new URLSearchParams(window.location.search);
