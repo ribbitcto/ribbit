@@ -18,6 +18,7 @@
             anonymize_ip: true,
             allow_ad_personalization_signals: false
         });
+        console.log('🐸 gtag config for G-4H4DRYJSM0 sent!');
 
         // 2) Send the custom event exclusively to our property
         window.gtag('event', 'ribbit_tag_triggered', {
