@@ -864,7 +864,7 @@
             'background: rgba(0, 0, 0, 0.8);' +
             'z-index: 15000;' +
             'pointer-events: none;' +
-            'animation: glitch-flash 0.55s ease-out forwards;';
+            'animation: glitch-flash 0.33s ease-out forwards;';
         
         // Add glitch styles
         var glitchStyles = document.createElement('style');
@@ -919,9 +919,9 @@
         }, 70);
         
         // Make body glitch too
-        document.body.style.animation = 'glitch-flash 0.55s ease-out forwards';
+        document.body.style.animation = 'glitch-flash 0.33s ease-out forwards';
         
-        // Clean up after effect (1s max)
+        // Clean up after effect (330ms max)
         setTimeout(function() {
             clearInterval(glitchInterval);
             document.body.style.filter = '';
@@ -937,7 +937,7 @@
                 glitchStyles.parentNode.removeChild(glitchStyles);
             }
             document.body.style.animation = '';
-        }, 1000);
+        }, 330);
     }
     
     // Auto-cleanup after 60 seconds to prevent memory leaks
