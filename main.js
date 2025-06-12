@@ -122,6 +122,46 @@ document.addEventListener('DOMContentLoaded', () => {
             element.tabIndex = 0; // Make it focusable for keyboard events
         }
     });
+
+    // ==================== DONATE ADDRESS TRACKING ====================
+    
+    // Make copyDonateAddress function globally available
+    window.copyDonateAddress = function() {
+        const donateAddress = '0xCca5B10E6377681D59B41e1a33E03A2eafC97739';
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(donateAddress).then(() => {
+            // Track the event
+            trackUserAction('donate address copied');
+            
+            // Visual feedback
+            const donateElement = document.querySelector('.donate-address');
+            if (donateElement) {
+                const originalText = donateElement.textContent;
+                donateElement.textContent = 'Copied! 🐸';
+                donateElement.style.color = '#4CAF50';
+                
+                setTimeout(() => {
+                    donateElement.textContent = originalText;
+                    donateElement.style.color = '';
+                }, 2000);
+            }
+            
+            console.log('🐸 Donate address copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy donate address: ', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = donateAddress;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            trackUserAction('donate address copied');
+            alert('🐸 Donate address copied to clipboard!');
+        });
+    };
     
     // Global copy event listener as backup
     document.addEventListener('copy', () => {
@@ -517,7 +557,7 @@ function copyCode() {
         'z-index: 9999;' +
         'pointer-events: auto;' +
         'overflow: hidden;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         'display: none;';
 
     // Add game styles
@@ -531,7 +571,7 @@ function copyCode() {
         'flex-direction: column;' +
         'gap: 10px;' +
         'align-items: flex-end;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '.frog-score {' +
         'background: rgba(255, 255, 255, 0.95);' +
@@ -542,7 +582,7 @@ function copyCode() {
         'color: #2E8B57;' +
         'box-shadow: 0 4px 15px rgba(0,0,0,0.3);' +
         'backdrop-filter: blur(10px);' +
-        'font-family: "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '.frog-lily-counter {' +
         'background: rgba(220, 20, 60, 0.9);' +
@@ -552,7 +592,7 @@ function copyCode() {
         'font-weight: bold;' +
         'color: white;' +
         'box-shadow: 0 4px 15px rgba(0,0,0,0.3);' +
-        'font-family: "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '.frog-lily-pad {' +
         'position: fixed;' +
@@ -605,7 +645,7 @@ function copyCode() {
         'animation: frog-buy-pop 1.2s ease-out forwards;' +
         'pointer-events: none;' +
         'z-index: 10003;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '@keyframes frog-buy-pop {' +
         '0% { transform: scale(0) rotate(0deg); opacity: 1; }' +
@@ -626,7 +666,7 @@ function copyCode() {
         'font-weight: bold;' +
         'z-index: 10005;' +
         'transition: all 0.3s ease;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '.frog-close-btn:hover {' +
         'background: #ff4444;' +
@@ -645,18 +685,18 @@ function copyCode() {
         'text-align: center;' +
         'z-index: 10006;' +
         'box-shadow: 0 0 50px rgba(0,0,0,0.8);' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '.frog-game-over h1 {' +
         'font-size: 36px;' +
         'color: #FF6B6B;' +
         'margin-bottom: 20px;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '.frog-game-over p {' +
         'font-size: 20px;' +
         'margin-bottom: 20px;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '.frog-restart-btn {' +
         'padding: 15px 30px;' +
@@ -668,7 +708,7 @@ function copyCode() {
         'cursor: pointer;' +
         'margin: 10px;' +
         'transition: all 0.3s ease;' +
-        'font-family: "Fredoka", "Comic Sans MS", cursive, sans-serif;' +
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;' +
         '}' +
         '.frog-restart-btn:hover {' +
         'background: #45a049;' +
@@ -1139,7 +1179,7 @@ function copyCode() {
         'font-weight: bold;' +
         'box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);' +
         'transition: all 0.3s ease;' +
-        'font-family: "Comic Sans MS", cursive, sans-serif;';
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;';
     
     buyBtn.onclick = function(e) {
         e.preventDefault();
@@ -1175,7 +1215,7 @@ function copyCode() {
         'font-weight: bold;' +
         'box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);' +
         'transition: all 0.3s ease;' +
-        'font-family: "Comic Sans MS", cursive, sans-serif;';
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;';
     
     // Add lick the toad button
     var lickBtn = document.createElement('button');
@@ -1190,7 +1230,7 @@ function copyCode() {
         'font-weight: bold;' +
         'box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);' +
         'transition: all 0.3s ease;' +
-        'font-family: "Comic Sans MS", cursive, sans-serif;';
+        'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;';
     
     playBtn.onclick = function(e) {
         e.preventDefault();
@@ -1223,9 +1263,9 @@ function copyCode() {
         // Trigger glitch effect
         triggerGlitchEffect();
         
-        // Show YouTube feed after glitch
+        // Open Twitter page after glitch
         setTimeout(function() {
-            showYouTubeFeed();
+            window.open('https://x.com/RibbitCTO', '_blank');
         }, 1000);
     };
 
@@ -1408,169 +1448,7 @@ function copyCode() {
         }, 1100);
     }
     
-    // YouTube feed function
-    function showYouTubeFeed() {
-        console.log('📺 Creating YouTube feed...');
-        
-        // Create feed overlay
-        var feedOverlay = document.createElement('div');
-        feedOverlay.id = 'youtube-feed-overlay';
-        feedOverlay.style.cssText = 'position: fixed;' +
-            'top: 0;' +
-            'left: 0;' +
-            'width: 100vw;' +
-            'height: 100vh;' +
-            'background: rgba(0, 0, 0, 0.95);' +
-            'z-index: 12000;' +
-            'overflow-y: auto;' +
-            'padding: 20px;' +
-            'box-sizing: border-box;';
-        
-        // Create feed container
-        var feedContainer = document.createElement('div');
-        feedContainer.style.cssText = 'max-width: 400px;' +
-            'margin: 0 auto;' +
-            'background: #1a1a1a;' +
-            'border-radius: 15px;' +
-            'padding: 20px;' +
-            'font-family: "Comic Sans MS", cursive, sans-serif;' +
-            'border: 2px solid #333;' +
-            'box-shadow: 0 0 30px rgba(156, 39, 176, 0.5);';
-        
-        // Feed header
-        var feedHeader = document.createElement('div');
-        feedHeader.innerHTML = '<h2 style="color: #9C27B0; text-align: center; margin: 0 0 20px 0; font-size: 24px;">🐸 TOAD VISION 👅</h2>';
-        feedContainer.appendChild(feedHeader);
-        
-        // Close button for feed
-        var feedCloseBtn = document.createElement('button');
-        feedCloseBtn.innerHTML = '✕ Close Feed';
-        feedCloseBtn.style.cssText = 'position: absolute;' +
-            'top: 20px;' +
-            'right: 20px;' +
-            'padding: 10px 15px;' +
-            'background: #ff4444;' +
-            'color: white;' +
-            'border: none;' +
-            'border-radius: 20px;' +
-            'cursor: pointer;' +
-            'font-size: 14px;' +
-            'font-weight: bold;';
-        
-        feedCloseBtn.onclick = function() {
-            if (feedOverlay.parentNode) {
-                feedOverlay.parentNode.removeChild(feedOverlay);
-            }
-        };
-        
-        // YouTube videos data
-        var videos = [
-            {
-                id: 'XQPgbWPVjc',
-                url: 'https://youtu.be/XQPgbWPVjc',
-                title: '🎵 Toad Tune #1'
-            },
-            {
-                id: 'O5DyT6VeRAc', 
-                url: 'https://youtu.be/O5DyT6VeRAc',
-                title: '🎵 Toad Tune #2'
-            }
-        ];
-        
-        // Create video posts
-        videos.forEach(function(video, index) {
-            var post = document.createElement('div');
-            post.style.cssText = 'margin-bottom: 30px;' +
-                'background: #2a2a2a;' +
-                'border-radius: 10px;' +
-                'padding: 15px;' +
-                'border: 1px solid #444;' +
-                'filter: pixelated;' +
-                'image-rendering: pixelated;';
-            
-                         // Post header
-             var postHeader = document.createElement('div');
-             postHeader.innerHTML = '<div style="color: #ccc; font-size: 12px; margin-bottom: 15px;">🐸 Follow us <a href="https://x.com/RibbitCTO" target="_blank" style="color: #9C27B0; text-decoration: none; font-weight: bold;">@RibbitCTO</a></div>';
-             post.appendChild(postHeader);
-            
-                         // YouTube iframe with better parameters
-             var iframe = document.createElement('iframe');
-             iframe.src = 'https://www.youtube.com/embed/' + video.id + '?autoplay=0&controls=1&modestbranding=1&rel=0&enablejsapi=1&origin=' + window.location.origin;
-             iframe.style.cssText = 'width: 100%;' +
-                 'height: 200px;' +
-                 'border: none;' +
-                 'border-radius: 8px;' +
-                 'filter: contrast(1.2) saturate(1.3);' +
-                 'image-rendering: pixelated;';
-             iframe.allowFullscreen = true;
-             iframe.setAttribute('frameborder', '0');
-             iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
-             
-             // Add error handling and load timeout
-             var hasLoaded = false;
-             
-             iframe.onload = function() {
-                 hasLoaded = true;
-                 console.log('✅ YouTube embed loaded successfully: ' + video.id);
-             };
-             
-             iframe.onerror = function() {
-                 console.log('🚫 YouTube embed failed for video: ' + video.id);
-                 createFallbackLink();
-             };
-             
-             // Timeout fallback for embedding restrictions
-             setTimeout(function() {
-                 if (!hasLoaded) {
-                     console.log('⏰ YouTube embed timeout for video: ' + video.id);
-                     createFallbackLink();
-                 }
-             }, 5000);
-             
-             function createFallbackLink() {
-                 if (iframe.parentNode) {
-                     var fallbackLink = document.createElement('a');
-                     fallbackLink.href = 'https://www.youtube.com/watch?v=' + video.id;
-                     fallbackLink.target = '_blank';
-                     fallbackLink.innerHTML = '🎥 Watch on YouTube<br><small style="font-size: 10px;">(Embed Restricted)</small>';
-                     fallbackLink.style.cssText = 'display: block; text-align: center; padding: 60px 20px; background: #333; color: #9C27B0; text-decoration: none; border-radius: 8px; font-weight: bold; transition: all 0.3s ease;';
-                     
-                     fallbackLink.onmouseover = function() {
-                         this.style.background = '#444';
-                         this.style.transform = 'scale(1.02)';
-                     };
-                     
-                     fallbackLink.onmouseout = function() {
-                         this.style.background = '#333';
-                         this.style.transform = 'scale(1)';
-                     };
-                     
-                     iframe.parentNode.replaceChild(fallbackLink, iframe);
-                 }
-             }
-            
-            post.appendChild(iframe);
-            
-                         // Post footer
-             var postFooter = document.createElement('div');
-             postFooter.innerHTML = '<div style="color: #666; font-size: 12px; margin-top: 10px; text-align: center; font-style: italic;">...fake frames feel real because real was fake first.</div>';
-             post.appendChild(postFooter);
-            
-            feedContainer.appendChild(post);
-        });
-        
-        feedOverlay.appendChild(feedCloseBtn);
-        feedOverlay.appendChild(feedContainer);
-        document.body.appendChild(feedOverlay);
-        
-        // GTM Event for tracking
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'youtube_feed_opened', {
-                'event_category': 'engagement',
-                'event_label': 'toad_vision_feed'
-            });
-        }
-    }
+    // Removed complex Twitter feed function - now just redirects to Twitter page
     
     // Auto-cleanup after 60 seconds to prevent memory leaks
     setTimeout(function() {
