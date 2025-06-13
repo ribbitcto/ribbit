@@ -61,7 +61,7 @@
             const targetPosition = buySection.offsetTop - 80;
             const startPosition = window.pageYOffset;
             const distance = targetPosition - startPosition;
-            const duration = 1100; // 25% shorter - snappy 1.1 second glitch journey
+            const duration = 550; // 50% shorter - snappy 0.55 second glitch journey
             let start = null;
             let glitchInterval;
             
@@ -149,7 +149,7 @@
                         }
                     }, 200);
                     
-                    // Fallback cleanup after 3 seconds max
+                    // Fallback cleanup after 1 second max
                     setTimeout(() => {
                         clearInterval(glitchInterval);
                         clearInterval(checkUniswapLoaded);
@@ -158,7 +158,7 @@
                             glitchOverlay.parentNode.removeChild(glitchOverlay);
                         }
                         window.glitchScrollActive = false;
-                    }, 3000);
+                    }, 1000);
                 }
             }
             
@@ -301,7 +301,7 @@
                 <a href="#tokenomics">Tokenomics</a>
                 <a href="https://t.me/ribbit_eth" target="_blank">Telegram</a>
                 <a href="https://x.com/RibbitCTO" target="_blank">Twitter</a>
-                <button class="buy-button" onclick="glitchScrollToBuy()">Buy $RIBBIT</button>
+                <button class="buy-button" onclick="glitchScrollToBuy()">Buy RIBBIT</button>
             </div>
         </div>
     </nav>
@@ -312,7 +312,7 @@
                 <img src="https://dd.dexscreener.com/ds-data/tokens/ethereum/0xb794ad95317f75c44090f64955954c3849315ffe.png?size=lg&key=5c3845" alt="RIBBIT Logo" class="hero-logo">
                 <h1>RIBBIT</h1>
                 <p class="tagline">the toad copy with no original.</p>
-                <button class="cta-button" onclick="glitchScrollToBuy()">Buy $RIBBIT</button>
+                <button class="cta-button" onclick="glitchScrollToBuy()">Buy RIBBIT</button>
             </div>
         </div>
     </header>
@@ -412,8 +412,8 @@
 
     <section id="buy-ribbit" class="section buy-section">
         <div class="container">
-            <h2>🐸 Buy $RIBBIT</h2>
-            <p class="buy-description">Ready to join us in the pond? Get your $RIBBIT tokens now!</p>
+            <h2>🐸 Buy RIBBIT</h2>
+            <p class="buy-description">Ready to join us in the pond? Get your RIBBIT tokens now!</p>
             <div class="buy-links">
                 <a href="https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe" class="buy-link" target="_blank">Open in Uniswap</a>
                 <a href="https://dexscreener.com/ethereum/0xb794ad95317f75c44090f64955954c3849315ffe" class="buy-link" target="_blank" onclick="trackChartOpen()">View Chart</a>
@@ -475,7 +475,7 @@
                     <a href="https://x.com/RibbitCTO" target="_blank">Twitter</a>
                 </div>
                 <div class="footer-section">
-                    <h3>Buy $RIBBIT</h3>
+                    <h3>Buy RIBBIT</h3>
                     <a href="https://app.uniswap.org/swap?chain=mainnet&inputCurrency=NATIVE&outputCurrency=0xb794ad95317f75c44090f64955954c3849315ffe" target="_blank">Uniswap</a>
                 </div>
             </div>
